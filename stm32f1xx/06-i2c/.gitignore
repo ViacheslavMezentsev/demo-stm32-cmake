@@ -1,0 +1,4 @@
+/build
+.cortex-debug*
+BROWSE.*
+.mxproject

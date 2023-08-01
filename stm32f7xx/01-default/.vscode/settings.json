@@ -1,0 +1,22 @@
+{
+    "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
+    "cmake.generator": "Ninja",
+    "cmake.buildDirectory" : "${workspaceRoot}/build/${buildType}",
+    "cmake.configureEnvironment":
+    {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "on"
+    },
+    "cortex-debug.pyocdPath": "pyocd",
+    "cortex-debug.gdbPath": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gdb",
+    "cortex-debug.stlinkPath": "ST-LINK_gdbserver.exe",
+    "cortex-debug.JLinkGDBServerPath": "JLinkGDBServerCL.exe",
+    "cortex-debug.openocdPath": "${env:USERPROFILE}/scoop/apps/openocd/current/bin/openocd.exe",
+    "files.associations": {
+        "Makefile": "makefile"
+    },
+    // Настройки проекта.
+    "executable": "${workspaceRoot}/build/${buildType}/${workspaceFolderBasename}.elf",
+    "device": "STM32F746NG",
+    "svdFile" : "${workspaceRoot}/STM32F7x6.svd",
+    "targetFamily": "stm32f7x"
+}

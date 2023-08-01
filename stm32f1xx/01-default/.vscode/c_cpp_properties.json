@@ -1,0 +1,57 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "Debug",
+            "includePath": [
+                "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
+                "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1",
+            ],
+            "defines": [
+                "_DEBUG",
+                "DEBUG",
+                "USE_HAL_DRIVER",
+                "STM32F103C8",
+                "__GNUC__"
+            ],
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "browse": {
+                "path": [
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            }
+        },
+        {
+            "name": "Release",
+            "includePath": [
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32F103C8",
+                "__GNUC__"
+            ],
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "browse": {
+                "path": [
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            }            
+        }
+    ]
+}
