@@ -15,7 +15,7 @@
         "Makefile": "makefile"
     },
     // Настройки проекта.
-    "executable": "${workspaceRoot}/build/${buildType}/${workspaceFolderBasename}.elf",
+    "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
     "device": "STM32F746NG",
     "svdFile" : "${workspaceRoot}/STM32F7x6.svd",
     "targetFamily": "stm32f7x"

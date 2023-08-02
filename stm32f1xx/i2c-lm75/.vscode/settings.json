@@ -15,7 +15,7 @@
         "Makefile": "makefile"
     },
     // Настройки проекта.
-    "executable": "${workspaceRoot}/build/${buildType}/${workspaceFolderBasename}.elf",
+    "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
     "device": "STM32F103C8",
     "svdFile" : "${workspaceRoot}/STM32F103xx.svd",
     "targetFamily": "stm32f1x"

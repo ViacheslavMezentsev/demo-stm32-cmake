@@ -14,4 +14,4 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 # Подключение библиотеки semihosting'а.
-target_link_options(${PROJECT_NAME} PRIVATE -l rdimon $<$<C_COMPILER_ID:GNU>:-specs=rdimon.specs>)
+#target_link_options(${PROJECT_NAME} PRIVATE -l rdimon $<$<C_COMPILER_ID:GNU>:-specs=rdimon.specs>)

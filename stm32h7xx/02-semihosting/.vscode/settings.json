@@ -15,7 +15,7 @@
         "Makefile": "makefile"
     },
     // Настройки проекта.
-    "executable": "${workspaceRoot}/build/${command:cmake.buildType}/${workspaceFolderBasename}.elf",
+    "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
     "device": "STM32H743XIHx",
     "svdFile" : "${workspaceRoot}/STM32H743x.svd",
     "targetFamily": "stm32h7x"

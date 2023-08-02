@@ -5,7 +5,7 @@
             "name": "Debug",
             "includePath": [
                 "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-                "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.2.1",
+                "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1",
             ],
             "defines": [
                 "_DEBUG",
@@ -22,7 +22,7 @@
             "browse": {
                 "path": [
                     "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.2.1"
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
@@ -32,7 +32,7 @@
             "name": "Release",
             "includePath": [
                     "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.2.1"
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
             ],
             "defines": [
                 "USE_HAL_DRIVER",
@@ -47,7 +47,7 @@
             "browse": {
                 "path": [
                     "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.2.1"
+                    "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/12.3.1"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"

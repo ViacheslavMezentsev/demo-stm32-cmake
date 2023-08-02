@@ -130,6 +130,11 @@ if(NOT (TARGET STM32::Nano::FloatScan))
     )
 endif()
 
+if(NOT (TARGET STM32::Semihosting))
+    add_library(STM32::Semihosting INTERFACE IMPORTED)
+    target_link_options(STM32::Semihosting INTERFACE -lrdimon $<$<C_COMPILER_ID:GNU>:--specs=rdimon.specs>)
+endif()
+
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 find_program(CMAKE_C_COMPILER NAMES ${STM32_TARGET_TRIPLET}-gcc HINTS ${TOOLCHAIN_BIN_PATH})

@@ -1,6 +1,7 @@
 {
     "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
     "cmake.generator": "Ninja",
+    "cmake.buildDirectory" : "${workspaceRoot}/build/${buildType}",
     "cmake.configureEnvironment":
     {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "on"
@@ -15,6 +16,7 @@
         "stm32f1xx.h": "c"
     },
     // Настройки проекта.
+    "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
     "device": "STM32F103C8",
     "svdFile" : "${workspaceRoot}/debugger/svd/STM32F103xx.svd",
     "targetFamily": "stm32f1x"

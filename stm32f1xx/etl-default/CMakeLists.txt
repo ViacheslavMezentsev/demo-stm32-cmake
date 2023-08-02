@@ -20,7 +20,7 @@ add_executable(${PROJECT_NAME})
 add_subdirectory(etl)
 add_subdirectory(src)
 
-target_link_libraries(${PROJECT_NAME} STM32::Nano etl::etl)
+target_link_libraries(${PROJECT_NAME} STM32::Nano STM32::Semihosting etl::etl)
 
 # Опции сборки.
 target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F103xB)
@@ -31,7 +31,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     # warning 
     -W -Wall -Wextra
     # optimization 
-    $<$<CONFIG:DEBUG>:-Os>
+    $<$<CONFIG:DEBUG>:-O0>
     $<$<CONFIG:RELEASE>:-Os>
     -ffunction-sections -fdata-sections
     # debug
