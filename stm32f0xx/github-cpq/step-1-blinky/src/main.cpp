@@ -14,6 +14,11 @@ public:
     PortPin( uint8_t port, uint8_t pin ) : Port( port - 'A' ), Pin( pin ) {}
 };
 
+
+/**
+ * \brief   Точка входа в программу.
+ *
+ */
 int main( void )
 {
     SystemCoreClockUpdate();

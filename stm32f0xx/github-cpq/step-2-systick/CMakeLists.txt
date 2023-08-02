@@ -30,7 +30,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     # warning 
     -W -Wall -Wextra
     # optimization 
-    $<$<CONFIG:DEBUG>:-Os>
+    $<$<CONFIG:DEBUG>:-O0>
     $<$<CONFIG:RELEASE>:-Os>
     -ffunction-sections -fdata-sections
     # debug
