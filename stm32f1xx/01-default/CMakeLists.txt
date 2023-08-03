@@ -7,7 +7,7 @@ set(MCU STM32F103C8T)
 string(SUBSTRING ${MCU} 5 2 MCU_FAMILY)
 string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
 
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/stm32_gcc.cmake")
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../../modules/stm32-cmake/cmake/stm32_gcc.cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../tools")
 
 # В качестве имени проекта используем имя папки (см. tasks.json и launch.json).
