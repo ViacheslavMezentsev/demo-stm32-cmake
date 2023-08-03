@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../modules/etl/cmake")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
@@ -12,15 +13,18 @@ set(PROJECT_NAME ${BASE_FOLDER})
 # Файл конфигурации компоновщика.
 set(LINKER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/device/linker/STM32F103C8Tx_FLASH.ld)
 
+include(helpers)
+
 project(${PROJECT_NAME} C CXX ASM)
 
 add_executable(${PROJECT_NAME})
 
 # Подключаем необходимые библиотеки.
-add_subdirectory(etl)
 add_subdirectory(src)
 
-target_link_libraries(${PROJECT_NAME} STM32::Nano STM32::Semihosting etl::etl)
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../modules/etl/include")
+
+target_link_libraries(${PROJECT_NAME} STM32::Nano STM32::Semihosting)
 
 # Опции сборки.
 target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F103xB)

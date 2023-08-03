@@ -2,7 +2,8 @@
     "env": {
         "defaultIncludePath": [
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**"
+            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**",
+            "${workspaceFolder}/../../modules/etl/include/**"
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F103C8" ],
         "compiler": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe"

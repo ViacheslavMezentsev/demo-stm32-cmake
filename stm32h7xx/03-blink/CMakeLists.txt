@@ -14,7 +14,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../tools")
 get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(PROJECT_NAME ${BASE_FOLDER})
 
-include(fetch_svd)
+include(stm32_utils)
+#include(fetch_svd)
+#fetch_svd(${MCU})
 
 project(${PROJECT_NAME} C CXX ASM)
 
@@ -27,7 +29,6 @@ set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FA
 set(CMSIS_H7_M7_SYSTEM              "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32h7xx.c")
 set(CMSIS_H7_M7_H743xx_STARTUP      "${CMAKE_CURRENT_SOURCE_DIR}/Core/Startup/startup_stm32h743xihx.s")
 
-#fetch_svd(${MCU})
 stm32_get_chip_type(${MCU_FAMILY} ${MCU_MODEL} MCU_TYPE)
 stm32_fetch_cmsis(${MCU_FAMILY})
 stm32_fetch_hal(${MCU_FAMILY})
