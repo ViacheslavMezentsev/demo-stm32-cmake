@@ -1,3 +1,6 @@
 [submodule "modules/stm32-cmake"]
 	path = modules/stm32-cmake
 	url = https://github.com/ObKo/stm32-cmake
+[submodule "modules/etl"]
+	path = modules/etl
+	url = https://github.com/ETLCPP/etl

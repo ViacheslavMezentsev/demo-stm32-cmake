@@ -1,3 +1,0 @@
-[submodule "stm32-cmake"]
-	path = stm32-cmake
-	url = https://github.com/ObKo/stm32-cmake
