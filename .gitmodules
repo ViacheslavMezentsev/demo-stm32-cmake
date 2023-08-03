@@ -4,3 +4,6 @@
 [submodule "modules/etl"]
 	path = modules/etl
 	url = https://github.com/ETLCPP/etl
+[submodule "modules/RTT"]
+	path = modules/RTT
+	url = https://github.com/SEGGERMicro/RTT
