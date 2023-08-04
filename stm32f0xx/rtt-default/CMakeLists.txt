@@ -34,26 +34,10 @@ stm32_fetch_hal(${MCU_FAMILY})
 find_package(CMSIS COMPONENTS ${MCU} REQUIRED)
 find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
-# Добавляем библиотеку RTT.
-add_library(RTT OBJECT 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/RTT/Syscalls/SEGGER_RTT_Syscalls_GCC.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/RTT/RTT/SEGGER_RTT.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/RTT/RTT/SEGGER_RTT_printf.c
-)
-
-target_include_directories(RTT PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/RTT/RTT
-)
-
-target_compile_options(RTT PRIVATE -MMD -MP -mthumb -mfloat-abi=soft)
-
+# Формируем проект.
 add_executable(${PROJECT_NAME} syscalls.c main.cpp)
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../modules/RTT/RTT
-)
+add_subdirectory(RTT)
 
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}    
@@ -62,12 +46,16 @@ target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_TYPE}
     STM32::NoSys
-    RTT
+    RTT::RTT
 )
 
-add_compile_definitions(USE_HAL_DRIVER STM32F030x8)
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F030x8)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE -Wl,-Map=${PROJECT_NAME}.map LINKER:--no-warn-rwx-segments,--print-memory-usage )
+
+target_include_directories(RTT PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_options(RTT PRIVATE $<$<CONFIG:DEBUG>:-Os> -mthumb -Wall -ffunction-sections -fdata-sections -mcpu=cortex-m0 --specs=nosys.specs)
 
 # Подключаем конфигурационный файл компоновщика.
 stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)

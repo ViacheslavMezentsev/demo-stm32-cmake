@@ -7,3 +7,6 @@
 [submodule "modules/RTT"]
 	path = modules/RTT
 	url = https://github.com/SEGGERMicro/RTT
+[submodule "modules/Qfplib-M0-tiny"]
+	path = modules/Qfplib-M0-tiny
+	url = https://github.com/mysterywolf/Qfplib-M0-tiny

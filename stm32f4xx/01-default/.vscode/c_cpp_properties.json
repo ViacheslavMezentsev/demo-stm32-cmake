@@ -4,7 +4,7 @@
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F407VG" ],
+        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F407xx" ],
         "compiler": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe"
       },    
     "configurations": [

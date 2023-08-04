@@ -53,7 +53,7 @@ int main( void )
     // Настройка терминала 0 для работы в неблокирующем режиме.
     SEGGER_RTT_ConfigUpBuffer( 0, NULL, NULL, 0, SEGGER_RTT_MODE_NO_BLOCK_TRIM );
 
-    SEGGER_RTT_WriteString(0, "SEGGER Real-Time-Terminal Sample\n");
+    SEGGER_RTT_WriteString( 0, "SEGGER Real-Time-Terminal Sample\n" );
 
     // Инициализация портов ввода-вывода.
     initGPIO();

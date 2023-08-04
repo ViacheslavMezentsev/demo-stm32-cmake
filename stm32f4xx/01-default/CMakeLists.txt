@@ -49,9 +49,10 @@ target_link_libraries(${PROJECT_NAME}
     STM32::NoSys
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F407xx)
 target_compile_options(${PROJECT_NAME} PRIVATE -Os $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_elf_bin(${PROJECT_NAME})
-stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_binary_file(${PROJECT_NAME})
+stm32_generate_hex_file(${PROJECT_NAME})

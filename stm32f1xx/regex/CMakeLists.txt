@@ -36,8 +36,6 @@ find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 # Подключаем необходимые библиотеки.
 add_subdirectory(tiny-regex)
 add_subdirectory(tests)
@@ -52,9 +50,11 @@ target_link_libraries(${PROJECT_NAME}
     STM32::Semihosting
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Os $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F103xB)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_elf_bin(${PROJECT_NAME})
-stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_binary_file(${PROJECT_NAME})
+stm32_generate_hex_file(${PROJECT_NAME})
