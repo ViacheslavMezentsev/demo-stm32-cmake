@@ -38,8 +38,6 @@ find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
 add_executable(${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 add_subdirectory(Core)
 add_subdirectory(User)
 
@@ -56,7 +54,9 @@ target_link_libraries(${PROJECT_NAME}
     STM32::NoSys
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Os $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F746xx)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 # Подключаем конфигурационный файл компоновщика.

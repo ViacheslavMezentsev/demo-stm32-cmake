@@ -36,8 +36,6 @@ find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
 add_executable(${PROJECT_NAME} syscalls.c main.cpp)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::RCC
@@ -49,8 +47,9 @@ target_link_libraries(${PROJECT_NAME}
     STM32::NoSys
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F407xx)
-target_compile_options(${PROJECT_NAME} PRIVATE -Os $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 stm32_print_size_of_target(${PROJECT_NAME})
