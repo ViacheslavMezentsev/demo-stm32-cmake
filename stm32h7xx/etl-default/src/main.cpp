@@ -9,8 +9,6 @@ etl::string<50> hello( "Hello from STM32!" );
 
 int main( void )
 {
-    SystemCoreClockUpdate();
-
     // Инициализация библиотеки Semihosting.
     initialise_monitor_handles();
 

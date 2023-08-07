@@ -16,7 +16,7 @@
     },
     // Настройки проекта.
     "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
-    "device": "STM32F746NG",
-    "svdFile" : "${workspaceRoot}/STM32F7x6.svd",
-    "targetFamily": "stm32f7x"
+    "device": "STM32H743XIHx",
+    "svdFile" : "${workspaceRoot}/STM32H743x.svd",
+    "targetFamily": "stm32h7x"
 }

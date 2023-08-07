@@ -53,6 +53,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void sysinit( void );
 void init( void );
 void setup( void );
 void loop( void );

@@ -5,13 +5,22 @@
 extern "C" void initialise_monitor_handles( void );
 
 /**
+ * \brief   Выполняет инициализацию до HAL_Init.
+ *
+ */
+void sysinit( void )
+{
+    // Инициализация библиотеки Semihosting.
+    initialise_monitor_handles();
+}
+
+
+/**
  * \brief   Выполняет инициализацию.
  *
  */
 void init( void )
 {
-    // Инициализация библиотеки Semihosting.
-    initialise_monitor_handles();
 }
 
 
