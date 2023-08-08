@@ -44,7 +44,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 )
 
 target_link_options(${PROJECT_NAME} PRIVATE
-    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -nostartfiles -nostartfiles -Wl,--gc-sections
+    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -nostartfiles -Wl,--gc-sections
     -T${LINKER_FILE} LINKER:-Map=${PROJECT_NAME}.map,--print-memory-usage
 )
 

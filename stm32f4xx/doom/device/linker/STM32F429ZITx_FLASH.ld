@@ -44,29 +44,25 @@ SECTIONS
 	} > rom
 	__exidx_end = .;
 
-  /* used by the startup to initialize data */
-  _sidata = LOADADDR(.data);
+	. = ALIGN(4); 
+	_etext = .;
+	_sidata = .; 
 
-  /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data : 
-  {
-    . = ALIGN(4);
-    _sdata = .;        /* create a global symbol at data start */
-    *(.data)           /* .data sections */
-    *(.data*)          /* .data* sections */
-
-    . = ALIGN(4);
-    _edata = .;        /* define a global symbol at data end */
-  } >ram
-
+	/* initialized data */
+	.data : AT (_etext) 
+	{
+		_sdata = .; 
+		*(.data .data.*) 
+		. = ALIGN(4); 
+		_edata = . ;
+	} > ram
 
 	/* uninitialized data */
 	.bss (NOLOAD) : 
 	{
 		_sbss = . ; 
-    *(.bss)
-    *(.bss*)
-    *(COMMON)
+		*(.bss .bss.*) 
+		/* *(COMMON) */
 		. = ALIGN(4); 
 		_ebss = . ; 
 	} > ram
