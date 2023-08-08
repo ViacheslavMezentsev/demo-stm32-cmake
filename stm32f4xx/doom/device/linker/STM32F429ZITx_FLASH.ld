@@ -16,11 +16,11 @@ SECTIONS
 	{
 		. = ALIGN(4);
 		*(.sdram .sdram.*)
-		*/chocdoom/i_video.o(COMMON)
-		*/chocdoom/r_bsp.o(COMMON)
-		*/chocdoom/w_wad.o(COMMON)
-		*/chocdoom/r_main.o(COMMON)
-		*/chocdoom/r_plane.o(COMMON)
+		*/chocdoom/src/i_video.c.obj(COMMON)
+		*/chocdoom/src/r_bsp.c.obj(COMMON)
+		*/chocdoom/src/w_wad.c.obj(COMMON)
+		*/chocdoom/src/r_main.c.obj(COMMON)
+		*/chocdoom/src/r_plane.c.obj(COMMON)
 	} > sdram
 	
 	/* program code */
@@ -62,7 +62,7 @@ SECTIONS
 	{
 		_sbss = . ; 
 		*(.bss .bss.*) 
-		/* *(COMMON) */
+		*(COMMON)
 		. = ALIGN(4); 
 		_ebss = . ; 
 	} > ram
