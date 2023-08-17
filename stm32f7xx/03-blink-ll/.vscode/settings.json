@@ -1,7 +1,7 @@
 {
     "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
     "cmake.generator": "Ninja",
-    "cmake.buildDirectory" : "${workspaceRoot}/build/${command:cmake.buildType}",
+    "cmake.buildDirectory" : "${workspaceRoot}/build/${buildType}",
     "cmake.configureEnvironment":
     {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "on"
@@ -16,7 +16,7 @@
     },
     // Настройки проекта.
     "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
-    "device": "STM32H743XIHx",
-    "svdFile" : "${workspaceRoot}/STM32H743x.svd",
-    "targetFamily": "stm32h7x"
+    "device": "STM32F746NG",
+    "svdFile" : "${workspaceRoot}/STM32F7x6.svd",
+    "targetFamily": "stm32f7x"
 }

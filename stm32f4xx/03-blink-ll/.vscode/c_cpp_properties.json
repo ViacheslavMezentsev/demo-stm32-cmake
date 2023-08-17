@@ -2,15 +2,16 @@
     "env": {
         "defaultIncludePath": [
             "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**"
+            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**",
+            "${workspaceFolder}/Core/Inc"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32H743xx" ],
+        "defaultDefines": [ "__GNUC__", "USE_FULL_LL_DRIVER", "STM32F407xx" ],
         "compiler": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe"
       },    
     "configurations": [
         {
             "name": "Debug",
-            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
+            "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}", "DEBUG" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
@@ -24,7 +25,7 @@
         },
         {
             "name": "Release",
-            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
+            "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",

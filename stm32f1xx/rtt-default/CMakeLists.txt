@@ -41,7 +41,7 @@ add_subdirectory(RTT)
 
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}    
-    HAL::STM32::${MCU_FAMILY}::RCCEx
+    HAL::STM32::${MCU_FAMILY}::RCC
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_TYPE}
@@ -55,7 +55,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPIL
 target_link_options(${PROJECT_NAME} PRIVATE -Wl,-Map=${PROJECT_NAME}.map LINKER:--no-warn-rwx-segments,--print-memory-usage )
 
 target_include_directories(RTT PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_options(RTT PRIVATE $<$<CONFIG:DEBUG>:-Os> -mthumb -Wall -ffunction-sections -fdata-sections -mcpu=cortex-m0 --specs=nosys.specs)
+target_compile_options(RTT PRIVATE $<$<CONFIG:DEBUG>:-Os> -mthumb -Wall -ffunction-sections -fdata-sections -mcpu=cortex-m1 --specs=nosys.specs)
 
 # Подключаем конфигурационный файл компоновщика.
 stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)
