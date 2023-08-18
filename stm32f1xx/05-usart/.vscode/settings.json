@@ -9,6 +9,7 @@
     "cortex-debug.gdbPath": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gdb",
     "cortex-debug.openocdPath": "${env:USERPROFILE}/scoop/apps/openocd/current/bin/openocd.exe",
     "cortex-debug.pyocdPath": "pyocd",
+    "cortex-debug.stutilPath": "st-util.exe",
     "cortex-debug.stlinkPath": "ST-LINK_gdbserver.exe",
     "cortex-debug.JLinkGDBServerPath": "JLinkGDBServerCL.exe",    
     "files.associations": {
