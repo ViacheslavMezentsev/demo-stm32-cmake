@@ -1,0 +1,8 @@
+build
+Project Backups
+BROWSE.*
+*.workspace
+modm
+SConstruct
+*.log
+*.dblite

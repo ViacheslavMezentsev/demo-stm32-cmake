@@ -11,8 +11,8 @@
         "servertype" : "pyocd",
         "targetId": "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preLaunchCommands" : [ "monitor arm semihosting enable" ],
-        //"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
+        //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}"       
@@ -27,10 +27,10 @@
         "servertype" : "openocd",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preLaunchCommands" : [ "monitor arm semihosting enable" ],
-        //"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
+        //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
-        //"showDevDebugOutput" : "raw",        
+        //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
         //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
         "configFiles": [
@@ -48,15 +48,14 @@
         "servertype" : "openocd",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preLaunchCommands" : [ "monitor arm semihosting enable" ],
-        //"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/jlink.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]        
+        ]
       },
       {
         "name" : "Debug (ocd/cmsis-dap)",
@@ -68,7 +67,7 @@
         "servertype" : "openocd",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
+        //"preRestartCommands" : [ "monitor arm semihosting enable" ],
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
@@ -103,11 +102,24 @@
         "servertype" : "jlink",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preLaunchCommands" : [ "monitor semihosting enable" ],
-        //"preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"        
+        "svdFile" : "${config:svdFile}",
+/*
+        "rttConfig":
+        {
+          "enabled": true,
+          "address": "auto",
+          "decoders": [
+              {
+                  "label": "",
+                  "port": 0,
+                  "type": "console"
+              }
+          ]
+        }        
+*/
       },
       {
         "name" : "Debug (stutil)",
@@ -119,7 +131,6 @@
         "servertype" : "stutil",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",

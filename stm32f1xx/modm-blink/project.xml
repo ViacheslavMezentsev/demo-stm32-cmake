@@ -1,0 +1,11 @@
+<library>
+  <extends>modm:blue-pill-f103</extends>
+  <options>
+    <option name="modm:build:build.path">./build</option>
+    <option name="modm:build:openocd.cfg">openocd.cfg</option>
+    <option name="modm:build:cmake:include_cmakelists">false</option>
+  </options>
+  <modules>
+    <module>modm:build:cmake</module>
+  </modules>
+</library>

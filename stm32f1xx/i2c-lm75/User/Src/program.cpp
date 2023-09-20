@@ -39,7 +39,6 @@ float SensorValue = 0;
 /// Счётчики.
 volatile uint32_t TimeTickMs = 0;
 uint32_t oldTimeTickHSec = 0;
-
 char buffer[255];
 
 /**
@@ -100,7 +99,7 @@ void setup( void )
     if ( SensorAvailable )
     {
         // data.csv будет создан на ПК.
-        FILE * fd = fopen( "C:\\Data\\data.csv", "w+" );
+        FILE * fd = fopen( "C:\\Temp\\data.csv", "w+" );
 
         if ( fd != NULL )
         {

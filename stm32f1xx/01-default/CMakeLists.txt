@@ -47,7 +47,12 @@ target_link_libraries(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F103xB)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>
+    $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>
+)
+
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 stm32_print_size_of_target(${PROJECT_NAME})

@@ -109,12 +109,12 @@ void HAL_SYSTICK_Callback( void )
  */
 void HAL_UART_TxCpltCallback( UART_HandleTypeDef * huart )
 {
-        switch ( State )
-        {
-            case TxState::Interrupt: State = TxState::DMA; break;
+    switch ( State )
+    {
+        case TxState::Interrupt: State = TxState::DMA; break;
 
-            case TxState::DMA: State = TxState::Default; break;
+        case TxState::DMA: State = TxState::Default; break;
 
-            default: State = TxState::Interrupt; break;
-        }
+        default: State = TxState::Interrupt; break;
+    }
 }
