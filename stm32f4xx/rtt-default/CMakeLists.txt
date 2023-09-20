@@ -41,7 +41,7 @@ add_subdirectory(RTT)
 
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}    
-    HAL::STM32::${MCU_FAMILY}::RCCEx
+    HAL::STM32::${MCU_FAMILY}::RCC
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_TYPE}

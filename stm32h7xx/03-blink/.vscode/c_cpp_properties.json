@@ -10,7 +10,7 @@
     "configurations": [
         {
             "name": "Debug",
-            "includePath": [ "${defaultIncludePath}" ],
+            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
             "defines": [ "${defaultDefines}", "DEBUG" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
@@ -24,7 +24,7 @@
         },
         {
             "name": "Release",
-            "includePath": [ "${defaultIncludePath}" ],
+            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
             "defines": [ "${defaultDefines}" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
