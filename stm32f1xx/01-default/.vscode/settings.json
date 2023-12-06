@@ -13,7 +13,11 @@
     "cortex-debug.JLinkGDBServerPath": "JLinkGDBServerCL.exe",
     "cortex-debug.openocdPath": "${env:USERPROFILE}/scoop/apps/openocd/current/bin/openocd.exe",
     "files.associations": {
-        "Makefile": "makefile"
+        "Makefile": "makefile",
+        "*.inc": "plaintext",
+        "cstdarg": "cpp",
+        "cstdio": "cpp",
+        "cstdint": "cpp"
     },
     // Настройки проекта.
     "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",

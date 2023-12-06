@@ -6,6 +6,7 @@
     <option name="modm:build:cmake:include_cmakelists">false</option>
   </options>
   <modules>
+    <!--<module>modm:build:scons</module>-->
     <module>modm:build:cmake</module>
   </modules>
 </library>
