@@ -5,57 +5,85 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "targets": [
-          "ALL_BUILD"
-      ],
+      "targets": [ "all" ],
       "problemMatcher": [],
       "group": "build"
     },
+    // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
     {
+      "label": "Сбросить (j-link)",
       "type": "shell",
-      "label": "flash",
-      "command": "st-flash",
+      "command": "cmd",
       "args": [
-        "--reset",
-        "write",
-        "${input:workspaceFolderForwardSlash}/build/${workspaceFolderBasename}.bin",
-        "0x8000000"
+        "/C",
+        "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo q) > flash.jlink) && (JLink.exe -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
-      "dependsOn": "CMake: build",
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "Builds project and flashes firmware."
-
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Сброс мк (j-link)."
     },
     {
+      "label": "Очистить всё (j-link)",
       "type": "shell",
-      "label": "erase",
-      "command": "st-flash",
+      "command": "cmd",
       "args": [
-        "--connect-under-reset",
-        "erase"
+        "/C",
+        "((echo r & echo h & echo erase & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "detail": "mass erase of chip"
-    }
-  ],
-  
-  "inputs": [
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Полная очистка мк (j-link)."
+    },
     {
-      "id": "workspaceFolderForwardSlash",
-      "type": "command",
-      "command": "extension.commandvariable.transform",
-      "args": {
-        "text": "${workspaceFolder}",
-        "find": "\\\\",
-        "replace": "/",
-        "flags": "g"
-      }
+      "label": "Прошить (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo r & echo h & echo loadfile ${command:cmake.buildType}/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка мк (j-link)."
+    },
+    {
+      "label": "Запустить (j-link)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [
+        "/C",
+        "((echo h & echo r & echo п & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
+      ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Выполняет команду go (j-link)."
+    },
+    {
+      "label": "Сброс (pyocd)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "pyocd reset -t ${config:device} -m sw" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Сброс мк (pyocd)."
+    },
+    {
+      "label": "Очистить всё (pyocd)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "pyocd erase -t ${config:device} --mass"],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Полная очистка мк (pyocd)."
+    },
+    {
+      "label": "Прошить (pyocd)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "pyocd flash -t ${config:device} ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка мк (pyocd)."
     }
   ]
 }

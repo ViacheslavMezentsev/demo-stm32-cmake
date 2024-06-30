@@ -15,7 +15,8 @@
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"       
+        "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
       },
       {
         "name" : "Debug (ocd/stlink)",
@@ -36,7 +37,7 @@
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/stlink.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]        
+        ]
       },
       {
         "name" : "Debug (ocd/jlink)",
@@ -47,11 +48,13 @@
         "type" : "cortex-debug",
         "servertype" : "openocd",
         "device" : "${config:device}",
+        "serialNumber": "${config:jlink-id}",
         "preLaunchTask" : "CMake: build",
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/jlink.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
@@ -72,6 +75,7 @@
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/cmsis-dap.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
@@ -90,7 +94,8 @@
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"        
+        "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },      
       },
       {
         "name" : "Debug (gdb/jlink)",
@@ -101,11 +106,13 @@
         "type" : "cortex-debug",
         "servertype" : "jlink",
         "device" : "${config:device}",
+        "serialNumber": "${config:jlink-id}",
         "preLaunchTask" : "CMake: build",
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"        
+        "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
       },
       {
         "name" : "Debug (stutil)",
@@ -120,7 +127,8 @@
         "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
         "runToEntryPoint" : "main",        
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"       
+        "svdFile" : "${config:svdFile}",
+        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },    
       }
     ],
     "version" : "0.2.0"
