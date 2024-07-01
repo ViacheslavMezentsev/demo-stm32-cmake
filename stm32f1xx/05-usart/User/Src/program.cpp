@@ -60,7 +60,7 @@ void setup( void )
 void loop( void )
 {
     HAL_Delay( 500 );
-    
+
     // Ожидаем окончания передачи пакета.
     if ( UART.gState != HAL_UART_STATE_READY ) return;
 
@@ -79,7 +79,7 @@ void loop( void )
             HAL_UART_Transmit( & UART, ( uint8_t * ) Text1, sizeof( Text1 ) - 1, 50 );
             State = TxState::Interrupt;
             break;
-    } 
+    }
 }
 
 
@@ -96,7 +96,7 @@ void HAL_SYSTICK_Callback( void )
         oldTimeTickHSec = TimeTickMs;
 
         // Индикация работы основного цикла.
-        HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );      
+        HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
     }
 }
 

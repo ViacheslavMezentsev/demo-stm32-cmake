@@ -33,7 +33,7 @@ public:
 int main( void )
 {
     // Объединяем порт и номер вывода.
-    auto led = PortPin( 'A', 5 );    
+    auto led = PortPin( 'A', 5 );
 
     // Включаем тактирование порта для выбранного вывода.
     SET_BIT( RCC->AHBENR, RCC_AHBENR_GPIOAEN << led.Port );

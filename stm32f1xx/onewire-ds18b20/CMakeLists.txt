@@ -1,0 +1,70 @@
+cmake_minimum_required(VERSION 3.19)
+
+set(CMAKE_C_STANDARD 11)
+
+# Семейство и модель мк.
+set(MCU STM32F103C6T)
+string(SUBSTRING ${MCU} 5 2 MCU_FAMILY)
+string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
+
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../../modules/stm32-cmake/cmake/stm32_gcc.cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../tools")
+
+# В качестве имени проекта используем имя папки (см. tasks.json и launch.json).
+get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(PROJECT_NAME ${BASE_FOLDER})
+
+include(stm32_utils)
+#include(fetch_svd)
+#fetch_svd(${MCU})
+
+project(${PROJECT_NAME} C ASM)
+
+# Разворачиваем окружение сборки (HAL, CMSIS, and CMSIS-SVD).
+set(CMSIS_VERSION "V1.8.5")
+set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
+set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
+set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
+set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
+
+# Набор переменных для использования локальной библиотеки Cube, находящейся по указанным путям.
+#set(STM32_CMSIS_PATH                "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS")
+#set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
+#set(STM32_HAL_${MCU_FAMILY}_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32${MCU_FAMILY}xx_HAL_Driver")
+
+# Использование локальных файлов.
+#set(CMSIS_${MCU_FAMILY}_SYSTEM                 "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32f1xx.c")
+set(CMSIS_${MCU_FAMILY}_F103xB_STARTUP         "${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f103xb.s")
+
+stm32_fetch_cmsis(${MCU_FAMILY})
+stm32_fetch_hal(${MCU_FAMILY})
+
+find_package(CMSIS COMPONENTS ${MCU} REQUIRED)
+find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
+
+add_executable(${PROJECT_NAME} syscalls.c SysTimer.c USART_OWire.c main.c)
+
+# Подключаем необходимые библиотеки.
+add_subdirectory(SPL)
+
+# Подключаем необходимые библиотеки.
+target_link_libraries(${PROJECT_NAME}
+    CMSIS::STM32::${MCU_MODEL}
+    STM32::Nano
+    STM32::NoSys
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_STDPERIPH_DRIVER STM32F10X_MD STM32F103x6)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_compile_options(${PROJECT_NAME} PRIVATE
+    $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>
+    $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>
+)
+
+target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
+
+stm32_print_size_of_target(${PROJECT_NAME})
+stm32_generate_elf_bin(${PROJECT_NAME})
+stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_lss_file(${PROJECT_NAME})

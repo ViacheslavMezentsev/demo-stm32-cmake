@@ -22,9 +22,8 @@ project(${PROJECT_NAME} C CXX ASM)
 
 # Разворачиваем окружение сборки (HAL, CMSIS, and CMSIS-SVD).# Разворачиваем окружение сборки (HAL, CMSIS, and CMSIS-SVD).
 # Набор переменных для использования библиотеки Cube из локального репозитория.
-# Путь $ENV{HOME}$ENV{USERPROFILE} используется для совместимости с Windows и Linux системами.
 set(CMSIS_VERSION "V1.11.5")
-set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{HOME}$ENV{USERPROFILE}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
+set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
 set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
 set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
 set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
@@ -48,7 +47,7 @@ find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 add_executable(${PROJECT_NAME} syscalls.c main.cpp)
 
 # Подключаем необходимые библиотеки.
-target_link_libraries(${PROJECT_NAME}    
+target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::RCC
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::CORTEX

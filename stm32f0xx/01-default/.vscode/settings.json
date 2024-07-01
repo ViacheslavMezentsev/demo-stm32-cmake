@@ -2,7 +2,7 @@
     "cSpell.ignoreRegExpList": ["\\b[0-9A-Z_]+\\b"],
     "cmake.generator": "Ninja",
     "cmake.buildDirectory" : "${workspaceRoot}/build/${buildType}",
-    "cmake.configureEnvironment": { "CMAKE_EXPORT_COMPILE_COMMANDS": "on" },
+    "cmake.configureEnvironment": { "CMAKE_EXPORT_COMPILE_COMMANDS": "on", "CMAKE_USER_HOME": "${userHome}" },
     // cortex-debug (Windows).
     "cortex-debug.pyocdPath.windows": "pyocd",
     "cortex-debug.gdbPath.windows": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gdb.exe",
@@ -12,7 +12,7 @@
     "cortex-debug.openocdPath.windows": "${env:USERPROFILE}/scoop/apps/openocd/current/bin/openocd.exe",
     // cortex-debug (Linux).
     "cortex-debug.gdbPath.linux": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/arm-none-eabi-gdb",
-    "cortex-debug.pyocdPath.linux": "pyocd",    
+    "cortex-debug.pyocdPath.linux": "pyocd",
     "cortex-debug.stutilPath.linux": "st-util",
     //"cortex-debug.stlinkPath.linux": "ST-LINK_gdbserver",
     "cortex-debug.JLinkGDBServerPath.linux": "JLinkGDBServerCLExe",
@@ -22,7 +22,7 @@
     "device": "STM32F030R8",
     "svdFile" : "${workspaceRoot}/STM32F030.svd",
     "targetFamily": "stm32f0x",
-    "jlink-id": "nucleo-f030",
+    //"jlink-id": "nucleo-f030", //-usb ${config:jlink-id}
     "toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current"
     //"toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
     //"toolchain": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1"

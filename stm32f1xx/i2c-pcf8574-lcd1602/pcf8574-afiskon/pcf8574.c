@@ -9,14 +9,16 @@
 
 #define LCD_DELAY_MS    (5)
 
-void I2C_Scan( void )
+uint8_t I2C_Scan( void )
 {
-    HAL_StatusTypeDef res;
+    HAL_StatusTypeDef res = HAL_ERROR;
 
     for ( uint16_t i = 0; i < 128; i++ )
     {
         res = HAL_I2C_IsDeviceReady( & hi2c1, i << 1, 1, 10 );
     }
+
+    return ( uint8_t ) res;
 }
 
 
@@ -42,7 +44,7 @@ HAL_StatusTypeDef LCD_SendInternal( uint8_t lcd_addr, uint8_t data, uint8_t flag
     data_arr[3] = lo | flags | BACKLIGHT;
 
     res = HAL_I2C_Master_Transmit( & hi2c1, lcd_addr, data_arr, sizeof( data_arr ), HAL_MAX_DELAY );
-    
+
     HAL_Delay( LCD_DELAY_MS );
 
     return res;

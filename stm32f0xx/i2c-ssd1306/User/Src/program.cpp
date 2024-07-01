@@ -60,5 +60,5 @@ void HAL_SYSTICK_Callback( void )
 
         // Индикация работы основного цикла.
         HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
-    }    
+    }
 }

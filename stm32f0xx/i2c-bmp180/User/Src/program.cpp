@@ -53,7 +53,7 @@ void loop( void )
 
     // Считать давление.
     int32_t pressure = BMP180_GetPressure();
-    
+
     printf( "%d\n", ( int ) pressure );
 
     HAL_Delay( 1000 );

@@ -1,13 +1,12 @@
 {
     "env": {
         "defaultIncludePath": [
-            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include",
-            "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/arm-none-eabi/include/c++/**",
-            "${workspaceFolder}/../../modules/etl/include/**"
+            "${config.toolchain}/arm-none-eabi/include",
+            "${config.toolchain}/arm-none-eabi/include/c++/**"
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F030x8" ],
-        "compiler": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current/bin/arm-none-eabi-gcc.exe"
-      },    
+        "compiler": "${config.toolchain}/bin/arm-none-eabi-gcc.exe"
+    },
     "configurations": [
         {
             "name": "Debug",
@@ -35,7 +34,7 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
-            }            
+            }
         }
     ],
     "version": 4

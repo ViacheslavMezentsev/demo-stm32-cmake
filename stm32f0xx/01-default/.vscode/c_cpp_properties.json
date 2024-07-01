@@ -6,7 +6,7 @@
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F030x8" ],
         "compiler": "${config.toolchain}/bin/arm-none-eabi-gcc.exe"
-      },    
+    },
     "configurations": [
         {
             "name": "Debug",
@@ -36,7 +36,7 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
-            }            
+            }
         }
     ],
     "version": 4

@@ -27,7 +27,7 @@ void initGPIO()
         .Pin   = LED_USER_Pin,
         .Mode  = GPIO_MODE_OUTPUT_PP,
         .Pull  = GPIO_NOPULL,
-        .Speed = GPIO_SPEED_FREQ_LOW,    
+        .Speed = GPIO_SPEED_FREQ_LOW,
     };
 
     HAL_GPIO_Init( LED_USER_GPIO_Port, &GPIO_Config );
@@ -51,7 +51,7 @@ int main()
         // Переключаем выход порта (мигаем светодиодом).
         HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
 
-        HAL_Delay( 500 );      
+        HAL_Delay( 500 );
     }
 
     return 0;

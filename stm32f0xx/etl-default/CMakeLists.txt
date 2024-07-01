@@ -4,7 +4,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cma
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../modules/etl/cmake")
 
 set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # В качестве имени проекта используем имя папки (см. tasks.json и launch.json).
 get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
@@ -29,12 +29,12 @@ target_link_libraries(${PROJECT_NAME} STM32::Nano STM32::Semihosting)
 # Опции сборки.
 target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F030x8)
 
-target_compile_options(${PROJECT_NAME} PRIVATE    
-    # device type (cortex-m0, cortex-m3, ..) 
+target_compile_options(${PROJECT_NAME} PRIVATE
+    # device type (cortex-m0, cortex-m3, ..)
     -mcpu=cortex-m0 -mthumb -mfloat-abi=soft
-    # warning 
+    # warning
     -W -Wall -Wextra
-    # optimization 
+    # optimization
     $<$<CONFIG:DEBUG>:-O0>
     $<$<CONFIG:RELEASE>:-Os>
     -ffunction-sections -fdata-sections
@@ -42,8 +42,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:DEBUG>:-g3>
     #-Wa,-adhlns=${PROJECT_NAME}.lst
     # other
-    -pipe 
-    # c/cxx flags    
+    -pipe
+    # c/cxx flags
     $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -funsigned-bitfields -fshort-enums -Winline>
 )
 
@@ -56,5 +56,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_binary_file(${PROJECT_NAME})
-stm32_generate_hex_file(${PROJECT_NAME})
+stm32_generate_elf_bin(${PROJECT_NAME})
+stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_lss_file(${PROJECT_NAME})

@@ -1,10 +1,10 @@
 {
-    "configurations" : 
+    "configurations" :
     [
       {
         "name" : "Debug (pyocd)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
@@ -12,15 +12,15 @@
         "targetId": "${config:device}",
         "preLaunchTask" : "CMake: build",
         //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"       
+        "svdFile" : "${config:svdFile}"
       },
       {
         "name" : "Debug (ocd/stlink)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
@@ -28,28 +28,28 @@
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
         //"preLaunchCommands" : [ "monitor arm semihosting enable" ],
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
         //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/stlink.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]        
+        ]
       },
       {
         "name" : "Debug (ocd/jlink)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
         "servertype" : "openocd",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
         "configFiles": [
@@ -60,7 +60,7 @@
       {
         "name" : "Debug (ocd/cmsis-dap)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
@@ -68,42 +68,42 @@
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
         //"preRestartCommands" : [ "monitor arm semihosting enable" ],
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
         "configFiles": [
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/cmsis-dap.cfg",
           "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]        
+        ]
       },
       {
         "name" : "Debug (gdb/stlink)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
         "servertype" : "stlink",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"        
+        "svdFile" : "${config:svdFile}"
       },
       {
         "name" : "Debug (gdb/jlink)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
         "servertype" : "jlink",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
 /*
@@ -118,23 +118,23 @@
                   "type": "console"
               }
           ]
-        }        
+        }
 */
       },
       {
         "name" : "Debug (stutil)",
         "cwd" : "${workspaceRoot}",
-        "executable" : "${config:executable}",        
+        "executable" : "${config:executable}",
         "interface": "swd",
         "request" : "launch",
         "type" : "cortex-debug",
         "servertype" : "stutil",
         "device" : "${config:device}",
         "preLaunchTask" : "CMake: build",
-        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],        
-        "runToEntryPoint" : "main",        
+        "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
+        "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
-        "svdFile" : "${config:svdFile}"       
+        "svdFile" : "${config:svdFile}"
       }
     ],
     "version" : "0.2.0"
