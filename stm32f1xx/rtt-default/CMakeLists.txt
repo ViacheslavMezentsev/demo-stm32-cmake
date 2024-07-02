@@ -69,6 +69,7 @@ target_compile_options(RTT PRIVATE $<$<CONFIG:DEBUG>:-Os> -mthumb -Wall -ffuncti
 # Подключаем конфигурационный файл компоновщика.
 stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)
 
+# Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
 stm32_generate_elf_bin(${PROJECT_NAME})
 stm32_generate_elf_hex(${PROJECT_NAME})

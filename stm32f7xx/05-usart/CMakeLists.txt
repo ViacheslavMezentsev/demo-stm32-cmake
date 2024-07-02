@@ -21,11 +21,18 @@ include(stm32_utils)
 project(${PROJECT_NAME} C CXX ASM)
 
 # Разворачиваем окружение сборки (HAL, CMSIS, and CMSIS-SVD).
-set(CMSIS_VERSION "V1.17.0")
-set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{USERPROFILE}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
+set(CMSIS_VERSION "V1.17.2")
+set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
 set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
 set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
 set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
+
+# Набор переменных для использования локальной библиотеки Cube, находящейся по указанным путям.
+#set(STM32_CMSIS_PATH                "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS")
+#set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
+#set(STM32_HAL_${MCU_FAMILY}_PATH    "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32${MCU_FAMILY}xx_HAL_Driver")
+
+# Использование локальных файлов.
 set(CMSIS_${MCU_FAMILY}_SYSTEM                 "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32f7xx.c")
 set(CMSIS_${MCU_FAMILY}_F746xx_STARTUP         "${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f746xx.s")
 
@@ -42,14 +49,14 @@ add_executable(${PROJECT_NAME})
 add_subdirectory(Core)
 add_subdirectory(User)
 
-target_link_libraries(${PROJECT_NAME}    
+target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::RCCEx
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::UART
     HAL::STM32::${MCU_FAMILY}::USART
     HAL::STM32::${MCU_FAMILY}::DMA
     HAL::STM32::${MCU_FAMILY}::PWREx
-    HAL::STM32::${MCU_FAMILY}::CORTEX    
+    HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_TYPE}
     STM32::Nano
     STM32::NoSys
@@ -63,6 +70,8 @@ target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--prin
 # Подключаем конфигурационный файл компоновщика.
 stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)
 
+# Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_binary_file(${PROJECT_NAME})
-stm32_generate_hex_file(${PROJECT_NAME})
+stm32_generate_elf_bin(${PROJECT_NAME})
+stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_lss_file(${PROJECT_NAME})

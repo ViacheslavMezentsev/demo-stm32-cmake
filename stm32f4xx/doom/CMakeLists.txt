@@ -29,12 +29,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 # Опции сборки.
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:DEBUG_> STM32F4XX USE_STDPERIPH_DRIVER STM32F429_439xx)
 
-target_compile_options(${PROJECT_NAME} PRIVATE    
-    # device type (cortex-m0, cortex-m3, ..) 
+target_compile_options(${PROJECT_NAME} PRIVATE
+    # device type (cortex-m0, cortex-m3, ..)
     -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -fcommon -fdata-sections -ffunction-sections
-    # warning 
+    # warning
     -Wall
-    # optimization 
+    # optimization
     $<$<CONFIG:DEBUG>:-O2>
     $<$<CONFIG:RELEASE>:-Os>
     # debug
@@ -50,5 +50,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_binary_file(${PROJECT_NAME})
-stm32_generate_hex_file(${PROJECT_NAME})
+stm32_generate_elf_bin(${PROJECT_NAME})
+stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_lss_file(${PROJECT_NAME})

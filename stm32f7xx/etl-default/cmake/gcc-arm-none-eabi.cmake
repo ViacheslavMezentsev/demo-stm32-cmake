@@ -1,4 +1,4 @@
-if(${CMAKE_VERSION} VERSION_LESS "3.16.0") 
+if(${CMAKE_VERSION} VERSION_LESS "3.16.0")
     message(WARNING "Current CMake version is ${CMAKE_VERSION}. stm32-cmake requires CMake 3.16 or greater")
 
 endif()
@@ -102,6 +102,43 @@ endfunction()
 # The generated file will be placed in the same directory as the ELF file.
 function(stm32_generate_hex_file TARGET)
     _stm32_generate_file(${TARGET} "hex" "ihex")
+endfunction()
+
+#Generates binary file and copies it with name <TARGET>.elf.bin
+function(stm32_generate_elf_bin TARGET)
+    stm32_generate_binary_file(${TARGET})
+    file(COPY_FILE "${CMAKE_BINARY_DIR}/${TARGET}.bin" "${CMAKE_BINARY_DIR}/${TARGET}.elf.bin" RESULT COPY_ERROR)
+    if(NOT COPY_ERROR EQUAL 0)
+        message("Error copying .bin file: ${COPY_ERROR}")
+    endif()
+endfunction()
+
+#Generates hex file and copies it with name <TARGET>.elf.hex
+function(stm32_generate_elf_hex TARGET)
+    stm32_generate_hex_file(${TARGET})
+    file(COPY_FILE "${CMAKE_BINARY_DIR}/${TARGET}.hex" "${CMAKE_BINARY_DIR}/${TARGET}.elf.hex" RESULT COPY_ERROR)
+    if(NOT COPY_ERROR EQUAL 0)
+        message("Error copying .bin file: ${COPY_ERROR}")
+    endif()
+endfunction()
+
+function(stm32_generate_lss_file TARGET)
+    set(OUTPUT_FILE_NAME "${TARGET}.lss")
+
+    get_target_property(RUNTIME_OUTPUT_DIRECTORY ${TARGET} RUNTIME_OUTPUT_DIRECTORY)
+    if(RUNTIME_OUTPUT_DIRECTORY)
+        set(OUTPUT_FILE_PATH "${RUNTIME_OUTPUT_DIRECTORY}/${OUTPUT_FILE_NAME}")
+    else()
+        set(OUTPUT_FILE_PATH "${OUTPUT_FILE_NAME}")
+    endif()
+
+    add_custom_command(
+        TARGET ${TARGET}
+        POST_BUILD
+        COMMAND ${CMAKE_OBJDUMP} -h -S "$<TARGET_FILE:${TARGET}>" > ${OUTPUT_FILE_PATH}
+        BYPRODUCTS ${OUTPUT_FILE_PATH}
+        COMMENT "Generating extended listing file ${OUTPUT_FILE_NAME} from ELF output file."
+    )
 endfunction()
 
 if(NOT (TARGET STM32::NoSys))

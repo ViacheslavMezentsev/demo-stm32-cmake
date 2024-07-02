@@ -30,9 +30,9 @@ void setup( void )
  *
  */
 void loop( void )
-{    
+{
     // Переключаем выход порта (мигаем светодиодом).
-    LL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );    
+    LL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
 
     auto value = LL_GPIO_IsInputPinSet( LED_USER_GPIO_Port, LED_USER_Pin );
 

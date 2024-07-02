@@ -28,7 +28,7 @@ void initGPIO()
         .Pin   = LED_Pin,
         .Mode  = GPIO_MODE_OUTPUT_PP,
         .Pull  = GPIO_NOPULL,
-        .Speed = GPIO_SPEED_FREQ_LOW,    
+        .Speed = GPIO_SPEED_FREQ_LOW,
     };
 
     HAL_GPIO_Init( LED_Port, & GPIO_Config );

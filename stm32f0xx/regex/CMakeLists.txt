@@ -64,7 +64,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F030x8)
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
-
+# Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
 stm32_generate_elf_bin(${PROJECT_NAME})
 stm32_generate_elf_hex(${PROJECT_NAME})

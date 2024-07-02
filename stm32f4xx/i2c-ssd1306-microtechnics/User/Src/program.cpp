@@ -16,7 +16,7 @@ void init( void )
 {
     // Дисплей на базе контроллера SSD1306. Библиотека для STM32.
     // https://microtechnics.ru/displej-na-baze-kontrollera-ssd1306-biblioteka-dlya-stm32/
-    
+
     // Инициализация SSD1306.
     SSD1306_Init();
 
@@ -54,10 +54,10 @@ void loop( void )
         SSD1306_UpdateScreen();
 
         while ( SSD1306_IsReady() == HAL_OK );
-      
+
         HAL_Delay( 25 );
     }
-    
+
     // Очистка дисплея.
     SSD1306_ClearScreen();
 
@@ -79,5 +79,5 @@ void HAL_SYSTICK_Callback( void )
 
         // Индикация работы основного цикла.
         HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
-    }    
+    }
 }
