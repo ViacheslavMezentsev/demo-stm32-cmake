@@ -23,7 +23,7 @@
     "svdFile" : "${workspaceRoot}/STM32F030.svd",
     "targetFamily": "stm32f0x",
     //"jlink-id": "nucleo-f030", //-usb ${config:jlink-id}
-    "toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current"
+    "toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current",
     //"toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
     //"toolchain": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
 }

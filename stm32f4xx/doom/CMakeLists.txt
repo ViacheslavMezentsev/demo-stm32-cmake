@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake)
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
 
 # В качестве имени проекта используем имя папки (см. tasks.json и launch.json).
 get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(PROJECT_NAME ${BASE_FOLDER})
 
 # Файл конфигурации компоновщика.
-set(LINKER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/device/linker/STM32F429ZITx_FLASH.ld)
+set(LINKER_FILE "${CMAKE_CURRENT_SOURCE_DIR}/device/linker/STM32F429ZITx_FLASH.ld")
 
 project(${PROJECT_NAME} C)
 
@@ -31,7 +31,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:DEBUG_> STM
 
 target_compile_options(${PROJECT_NAME} PRIVATE
     # device type (cortex-m0, cortex-m3, ..)
-    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -fcommon -fdata-sections -ffunction-sections
+    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -fcommon
+    -fdata-sections -ffunction-sections
     # warning
     -Wall
     # optimization
@@ -44,12 +45,13 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 )
 
 target_link_options(${PROJECT_NAME} PRIVATE
-    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian -nostartfiles -Wl,--gc-sections
-    -T${LINKER_FILE} LINKER:-Map=${PROJECT_NAME}.map,--print-memory-usage
+    -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mlittle-endian
+    -nostartfiles
+    -T${LINKER_FILE} LINKER:-Map=${PROJECT_NAME}.map,--gc-sections,--print-memory-usage
 )
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_elf_bin(${PROJECT_NAME})
-stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_binary_file(${PROJECT_NAME})
+stm32_generate_hex_file(${PROJECT_NAME})
 stm32_generate_lss_file(${PROJECT_NAME})

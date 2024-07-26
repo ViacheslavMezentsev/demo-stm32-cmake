@@ -1,19 +1,20 @@
 {
     "env": {
         "defaultIncludePath": [
-            "${config.toolchain}/arm-none-eabi/include",
-            "${config.toolchain}/arm-none-eabi/include/c++/**"
+            "${config:toolchain}/arm-none-eabi/include",
+            "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F030x8" ],
-        "compiler": "${config.toolchain}/bin/arm-none-eabi-gcc.exe"
+        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32H743xx" ],
+        "compiler": "${config:toolchain}/bin/arm-none-eabi-gcc.exe"
     },
     "configurations": [
         {
             "name": "Debug",
-            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
+            "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}", "DEBUG" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
@@ -24,10 +25,11 @@
         },
         {
             "name": "Release",
-            "includePath": [ "${defaultIncludePath}", "${workspaceFolder}/Core/Inc" ],
+            "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}" ],
             "intelliSenseMode": "gcc-arm",
             "compilerPath": "${compiler}",
+            "compileCommands": "${workspaceFolder}/build/Release/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",

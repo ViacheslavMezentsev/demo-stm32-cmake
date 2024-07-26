@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake)
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
@@ -10,7 +10,7 @@ get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(PROJECT_NAME ${BASE_FOLDER})
 
 # Файл конфигурации компоновщика.
-set(LINKER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/device/linker/STM32F030R8Tx_FLASH.ld)
+set(LINKER_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/device/linker/STM32F030R8Tx_FLASH.ld")
 
 project(${PROJECT_NAME} C CXX ASM)
 
@@ -51,6 +51,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_elf_bin(${PROJECT_NAME})
-stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_binary_file(${PROJECT_NAME})
+stm32_generate_hex_file(${PROJECT_NAME})
 stm32_generate_lss_file(${PROJECT_NAME})

@@ -2,7 +2,7 @@
 #include "pcf8574.h"
 #include "main.h"
 
-/// Период сигнала, управляющего светодиодом LED_USER, мсек.
+/// Период сигнала, управляющего светодиодом LED_USER, [мс].
 #define LED_USER_PERIOD_MSEC    ( 500 )
 
 #define LCD_ADDR ( 0x27 << 1 )

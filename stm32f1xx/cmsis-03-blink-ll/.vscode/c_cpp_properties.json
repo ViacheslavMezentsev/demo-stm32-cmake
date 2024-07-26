@@ -1,0 +1,43 @@
+{
+    "env": {
+        "defaultIncludePath": [
+            "${config:toolchain}/arm-none-eabi/include",
+            "${config:toolchain}/arm-none-eabi/include/c++/**"
+        ],
+        "defaultDefines": [ "__GNUC__", "USE_FULL_LL_DRIVER", "STM32F103x6" ],
+        "compiler": "${config:toolchain}/bin/arm-none-eabi-gcc.exe"
+    },
+    "configurations": [
+        {
+            "name": "Debug",
+            "includePath": [ "${defaultIncludePath}" ],
+            "defines": [ "${defaultDefines}", "DEBUG" ],
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "${compiler}",
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            }
+        },
+        {
+            "name": "Release",
+            "includePath": [ "${defaultIncludePath}" ],
+            "defines": [ "${defaultDefines}" ],
+            "intelliSenseMode": "gcc-arm",
+            "compilerPath": "${compiler}",
+            "compileCommands": "${workspaceFolder}/build/Release/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
+            }
+        }
+    ],
+    "version": 4
+}

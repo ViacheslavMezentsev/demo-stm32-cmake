@@ -4,7 +4,7 @@
 #include "bmp180_for_stm32_hal.h"
 #include "main.h"
 
-/// Период сигнала, управляющего светодиодом LED_USER, мсек.
+/// Период сигнала, управляющего светодиодом LED_USER, [мс].
 #define LED_USER_PERIOD_MSEC    ( 500 )
 
 /// Счётчики.

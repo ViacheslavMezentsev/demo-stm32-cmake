@@ -1,8 +1,6 @@
-build
-Project Backups
+/build
+/Project Backups
+.cortex-debug*
 BROWSE.*
-*.workspace
-modm
-SConstruct
-*.log
-*.dblite
+.mxproject
+*.User.workspace

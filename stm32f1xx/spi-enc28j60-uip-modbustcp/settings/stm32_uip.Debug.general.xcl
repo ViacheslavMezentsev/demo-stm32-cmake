@@ -1,0 +1,15 @@
+"C:\Program Files\IAR Systems\ARM\Embedded Workbench 9.2\arm\bin\armPROC.dll" 
+
+"C:\Program Files\IAR Systems\ARM\Embedded Workbench 9.2\arm\bin\armJLINK.dll" 
+
+"D:\github\ViacheslavMezentsev\demo-stm32-cmake\stm32f1xx\spi-enc28j60-uip-modbustcp\Debug\STM32-uIP.out" 
+
+--plugin="C:\Program Files\IAR Systems\ARM\Embedded Workbench 9.2\arm\bin\armLibSupportUniversal.dll" 
+
+--device_macro="C:\Program Files\IAR Systems\ARM\Embedded Workbench 9.2\arm/config/debugger/ST/STM32F1xx.dmac" 
+
+--flash_loader="C:\Program Files\IAR Systems\ARM\Embedded Workbench 9.2\arm/config/flashloader/ST/FlashSTM32F10xx8.board" 
+
+
+
+

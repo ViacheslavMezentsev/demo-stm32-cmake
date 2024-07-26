@@ -1,11 +1,11 @@
 {
     "env": {
         "defaultIncludePath": [
-            "${config.toolchain}/arm-none-eabi/include",
-            "${config.toolchain}/arm-none-eabi/include/c++/**"
+            "${config:toolchain}/arm-none-eabi/include",
+            "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F030x8" ],
-        "compiler": "${config.toolchain}/bin/arm-none-eabi-gcc.exe"
+        "compiler": "${config:toolchain}/bin/arm-none-eabi-gcc.exe"
     },
     "configurations": [
         {

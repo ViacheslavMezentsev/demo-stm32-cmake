@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
 # Семейство и модель мк.
@@ -68,6 +69,6 @@ stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${MCU}x_FLASH.ld)
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_elf_bin(${PROJECT_NAME})
-stm32_generate_elf_hex(${PROJECT_NAME})
+stm32_generate_binary_file(${PROJECT_NAME})
+stm32_generate_hex_file(${PROJECT_NAME})
 stm32_generate_lss_file(${PROJECT_NAME})

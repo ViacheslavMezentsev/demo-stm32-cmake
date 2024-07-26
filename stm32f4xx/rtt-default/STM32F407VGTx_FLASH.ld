@@ -55,7 +55,7 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
+_Min_Heap_Size = 0x0;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Specify the memory areas */
@@ -133,7 +133,7 @@ SECTIONS
 
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
-  
+
   /* Uninitialized data section */
   . = ALIGN(4);
   .bss :
@@ -152,7 +152,7 @@ SECTIONS
   } >RAM
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data : 
+  .data :
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
@@ -165,11 +165,11 @@ SECTIONS
 
   _siccmram = LOADADDR(.ccmram);
 
-  /* CCM-RAM section 
-  * 
-  * IMPORTANT NOTE! 
+  /* CCM-RAM section
+  *
+  * IMPORTANT NOTE!
   * If initialized variables will be placed in this section,
-  * the startup code needs to be modified to copy the init-values.  
+  * the startup code needs to be modified to copy the init-values.
   */
   .ccmram :
   {
@@ -177,11 +177,11 @@ SECTIONS
     _sccmram = .;       /* create a global symbol at ccmram start */
     *(.ccmram)
     *(.ccmram*)
-    
+
     . = ALIGN(4);
     _eccmram = .;       /* create a global symbol at ccmram end */
   } >CCMRAM AT> FLASH
- 
+
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {
@@ -193,7 +193,7 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
-  
+
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

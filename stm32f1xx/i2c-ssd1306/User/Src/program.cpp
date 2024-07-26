@@ -2,7 +2,7 @@
 #include "ssd1306_tests.h"
 #include "main.h"
 
-/// Период сигнала, управляющего светодиодом LED_USER, мсек.
+/// Период сигнала, управляющего светодиодом LED_USER, [мс].
 #define LED_USER_PERIOD_MSEC    ( 500 )
 
 /// Счётчики.

@@ -5,7 +5,7 @@
 /// Semihosting Initializing.
 extern "C" void initialise_monitor_handles( void );
 
-/// Период сигнала, управляющего светодиодом LED_USER, мсек.
+/// Период сигнала, управляющего светодиодом LED_USER, [мс].
 #define LED_USER_PERIOD_MSEC    ( 1000 )
 
 /// Счётчики.

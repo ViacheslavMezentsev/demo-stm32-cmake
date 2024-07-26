@@ -16,7 +16,7 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
       },
       {
         "name" : "Debug (ocd/stlink)",
@@ -33,11 +33,8 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
-        "configFiles": [
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/stlink.cfg",
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
+        "configFiles": [ "interface/stlink.cfg", "target/${config:targetFamily}.cfg" ]
       },
       {
         "name" : "Debug (ocd/jlink)",
@@ -54,11 +51,8 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
-        "configFiles": [
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/jlink.cfg",
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
+        "configFiles": [ "interface/stlink.cfg", "target/${config:targetFamily}.cfg" ]
       },
       {
         "name" : "Debug (ocd/cmsis-dap)",
@@ -75,11 +69,8 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
-        "configFiles": [
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/interface/cmsis-dap.cfg",
-          "${env:USERPROFILE}/scoop/apps/openocd/current/share/openocd/scripts/target/${config:targetFamily}.cfg"
-        ]
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
+        "configFiles": [ "interface/stlink.cfg", "target/${config:targetFamily}.cfg" ]
       },
       {
         "name" : "Debug (gdb/stlink)",
@@ -95,7 +86,7 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
       },
       {
         "name" : "Debug (gdb/jlink)",
@@ -112,7 +103,8 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
+        "rttConfig": { "enabled": false, "address": "auto", "decoders": [ { "label": "RTT channel 0", "port": 0, "timestamp": true, "type": "console" } ] }
       },
       {
         "name" : "Debug (stutil)",
@@ -128,7 +120,7 @@
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile" : "${config:svdFile}",
-        //"liveWatch": { "enabled": true, "samplesPerSecond": 4 },
+        "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
       }
     ],
     "version" : "0.2.0"

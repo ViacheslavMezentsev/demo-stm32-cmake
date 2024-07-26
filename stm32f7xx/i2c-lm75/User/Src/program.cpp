@@ -8,7 +8,7 @@
 /// Semihosting Initializing.
 extern "C" void initialise_monitor_handles( void );
 
-/// Период сигнала, управляющего светодиодом LED_USER, мсек.
+/// Период сигнала, управляющего светодиодом LED_USER, [мс].
 #define LED_USER_PERIOD_MSEC    ( 500 )
 
 /// Адрес цифрового датчика температуры (STLM75).
@@ -20,7 +20,7 @@ extern "C" void initialise_monitor_handles( void );
 /// Количество попыток определения наличия I2C устройства.
 #define I2C_IS_DEVICE_READY_TRIALS          (3)
 
-/// Время ожидания ответа от устройства I2C, мсек.
+/// Время ожидания ответа от устройства I2C, [мс].
 #define I2C_IS_DEVICE_READY_TIMEOUT_MSEC    ( 20 )
 
 /// Признак наличия датчика.
