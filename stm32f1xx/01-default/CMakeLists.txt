@@ -42,12 +42,15 @@ stm32_fetch_hal(${MCU_FAMILY})
 find_package(CMSIS COMPONENTS ${MCU} REQUIRED)
 find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
-add_executable(${PROJECT_NAME} syscalls.c main.cpp)
+add_executable(${PROJECT_NAME} syscalls.c xprintf.c uart.cpp main.cpp)
 
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::RCC
+    HAL::STM32::${MCU_FAMILY}::DMA
     HAL::STM32::${MCU_FAMILY}::GPIO
+    HAL::STM32::${MCU_FAMILY}::UART
+    HAL::STM32::${MCU_FAMILY}::USART
     HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_MODEL}
     STM32::Nano

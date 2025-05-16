@@ -1,7 +1,7 @@
 #include <stm32f1xx_hal.h>
+#include "xprintf.h"
 
-#define LED_USER_Pin GPIO_PIN_13
-#define LED_USER_GPIO_Port GPIOC
+extern void MX_USART1_UART_Init( void );
 
 /// Обработчик прерывания SysTick.
 extern "C" void SysTick_Handler( void )
@@ -9,6 +9,10 @@ extern "C" void SysTick_Handler( void )
     HAL_IncTick();
 }
 
+const char Text1[] = "Привет из STM32! (def)\n";
+
+#define LED_USER_Pin       GPIO_PIN_13
+#define LED_USER_GPIO_Port GPIOC
 
 /**
  * \brief   Инициализация портов ввода-вывода.
@@ -22,11 +26,10 @@ void initGPIO()
     // Начальный уровень на выходе порта.
     HAL_GPIO_WritePin( LED_USER_GPIO_Port, LED_USER_Pin, GPIO_PIN_SET );
 
-    GPIO_InitTypeDef GPIO_Config =
-    {
-        .Pin   = LED_USER_Pin,
-        .Mode  = GPIO_MODE_OUTPUT_PP,
-        .Pull  = GPIO_NOPULL,
+    GPIO_InitTypeDef GPIO_Config = {
+        .Pin = LED_USER_Pin,
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
         .Speed = GPIO_SPEED_FREQ_LOW,
     };
 
@@ -46,13 +49,16 @@ int main()
     // Инициализация портов ввода-вывода.
     initGPIO();
 
+    // Настройка UART.
+    MX_USART1_UART_Init();
+
     while ( 1 )
     {
         // Переключаем выход порта (мигаем светодиодом).
         HAL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
 
         HAL_Delay( 500 );
-    }
 
-    return 0;
+        xputs( Text1 );
+    }
 }

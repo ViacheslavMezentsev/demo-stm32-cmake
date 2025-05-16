@@ -11,7 +11,7 @@
     "cortex-debug.JLinkGDBServerPath.windows": "JLinkGDBServerCL.exe",
     "cortex-debug.openocdPath.windows": "${env:USERPROFILE}/scoop/apps/openocd/current/bin/openocd.exe",
     // cortex-debug (Linux).
-    "cortex-debug.gdbPath.linux": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1/bin/arm-none-eabi-gdb",
+    "cortex-debug.gdbPath.linux": "${env:HOME}/xpack-arm-none-eabi-gcc-13.3.1-1.1/bin/arm-none-eabi-gdb",
     "cortex-debug.pyocdPath.linux": "pyocd",
     "cortex-debug.stutilPath.linux": "st-util",
     //"cortex-debug.stlinkPath.linux": "ST-LINK_gdbserver",
@@ -23,7 +23,8 @@
     "svdFile" : "${workspaceRoot}/STM32F429.svd",
     "targetFamily": "stm32f4x",
     //"jlink-id": "nucleo-f030", //-usb ${config:jlink-id}
-    "toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current"
+    //"toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current"
+    "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1"
     //"toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
     //"toolchain": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
 }

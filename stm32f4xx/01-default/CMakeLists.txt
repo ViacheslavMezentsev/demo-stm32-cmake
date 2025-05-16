@@ -4,7 +4,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
 # Семейство и модель мк.
-set(MCU STM32F407VGT)
+set(MCU STM32F401CCT)
 string(SUBSTRING ${MCU} 5 2 MCU_FAMILY)
 string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
 
@@ -58,7 +58,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F407xx)
+target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F401xx)
 target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 

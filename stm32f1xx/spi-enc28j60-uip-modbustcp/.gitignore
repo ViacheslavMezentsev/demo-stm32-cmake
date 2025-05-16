@@ -1,6 +1,43 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects
+*.dll
+*.so
+*.so.*
+*.dylib
+
+*.map
+
+# Executables
+*.exe
+*.out
+*.hex
+*.bin
+*.sim
+
 /build
 /Project Backups
 .cortex-debug*
 BROWSE.*
 .mxproject
 *.User.workspace
+
+# IAR
+EWARM/*
+#!EWARM/*.ewd
+!EWARM/*.ewp
+#!EWARM/*.ewt
+!EWARM/*.eww
+!EWARM/*.s
+!EWARM/*.icf
+EWARM/Backup*.*

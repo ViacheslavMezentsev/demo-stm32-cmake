@@ -22,6 +22,7 @@ include(stm32_utils)
 project(${PROJECT_NAME} C CXX ASM)
 
 # Разворачиваем окружение сборки (HAL, CMSIS, and CMSIS-SVD).
+set(CMSIS_VERSION "V1.8.5")
 set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
 set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
 set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
