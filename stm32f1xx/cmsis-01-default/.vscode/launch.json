@@ -97,7 +97,7 @@
       "type" : "cortex-debug",
       "servertype" : "jlink",
       "device" : "${config:device}",
-      "serialNumber": "${config:jlink-id}",
+      //"serialNumber": "${config:jlink-id}",
       "preLaunchTask" : "CMake: build",
       "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
       "runToEntryPoint" : "main",

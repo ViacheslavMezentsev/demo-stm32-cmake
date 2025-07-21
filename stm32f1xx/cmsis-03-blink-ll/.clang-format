@@ -1,5 +1,5 @@
 ﻿AccessModifierOffset: '-4'
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: DontAlign
 AlignConsecutiveMacros: 'true'
 AlignConsecutiveAssignments: 'false'
 AlignConsecutiveDeclarations: 'false'
@@ -19,8 +19,8 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: 'false'
 AlwaysBreakTemplateDeclarations: 'Yes'
-BinPackArguments: 'false'
-BinPackParameters: 'false'
+BinPackArguments: 'true'
+BinPackParameters: 'true'
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Custom
 BraceWrapping:
@@ -30,17 +30,20 @@ BraceWrapping:
   AfterEnum: 'true'
   AfterFunction: 'true'
   AfterNamespace: 'false'
-  AfterStruct: 'true'
+  AfterStruct: 'false'
   AfterUnion: 'true'
+BreakConstructorInitializers: BeforeColon
+BreakConstructorInitializersBeforeComma: 'false'
 BreakBeforeTernaryOperators: 'true'
-BreakConstructorInitializers: BeforeComma
-BreakInheritanceList: BeforeComma
 ColumnLimit: '120'
 CompactNamespaces: 'false'
 ConstructorInitializerIndentWidth: '0'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+ContinuationIndentWidth: '4'
 ExperimentalAutoDetectBinPacking: 'false'
 FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
+IndentCaseLabels: 'true'
 IndentWidth: '4'
 IndentWrappedFunctionNames: 'false'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'

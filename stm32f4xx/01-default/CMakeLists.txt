@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
 # Семейство и модель мк.
@@ -49,8 +48,10 @@ add_executable(${PROJECT_NAME} syscalls.c main.cpp)
 # Подключаем необходимые библиотеки.
 target_link_libraries(${PROJECT_NAME}
     HAL::STM32::${MCU_FAMILY}::RCC
+    HAL::STM32::${MCU_FAMILY}::DMA
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::UART
+    HAL::STM32::${MCU_FAMILY}::USART
     HAL::STM32::${MCU_FAMILY}::CORTEX
     CMSIS::STM32::${MCU_MODEL}
     STM32::Nano
@@ -59,7 +60,9 @@ target_link_libraries(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER STM32F401xx)
-target_compile_options(${PROJECT_NAME} PRIVATE $<$<CONFIG:DEBUG>:-Os> $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>)
+target_compile_options(${PROJECT_NAME} PRIVATE 
+    $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>
+    $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>)
 target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
 
 # Артефакты сборки.

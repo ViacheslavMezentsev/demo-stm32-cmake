@@ -77,9 +77,9 @@ void HAL_MspInit(void)
   HAL_NVIC_SetPriority(RCC_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(RCC_IRQn);
 
-  /** NONJTRST: Full SWJ (JTAG-DP + SW-DP) but without NJTRST
+  /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
   */
-  __HAL_AFIO_REMAP_SWJ_NONJTRST();
+  __HAL_AFIO_REMAP_SWJ_NOJTAG();
 
   /* USER CODE BEGIN MspInit 1 */
 

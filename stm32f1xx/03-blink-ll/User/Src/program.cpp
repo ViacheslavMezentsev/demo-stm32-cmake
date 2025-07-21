@@ -34,8 +34,10 @@ void loop( void )
     // Переключаем выход порта (мигаем светодиодом).
     LL_GPIO_TogglePin( LED_USER_GPIO_Port, LED_USER_Pin );
 
+    // Читаем состояние порта и выводим его в консоль.
     auto value = LL_GPIO_IsInputPinSet( LED_USER_GPIO_Port, LED_USER_Pin );
 
+    // Если светодиод включен, то выводим "On", иначе "Off".
     printf( "Led %s\n", value == SET ? "On" : "Off" );
 
     LL_mDelay( 500 );

@@ -32,11 +32,14 @@ extern "C" {
 #include "bsp_ip_conf.h"
 #include "fw_version.h"
 #include "motion_fx_manager.h"
-#include "motion_mc_manager.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define DWT_LAR_KEY  0xC5ACCE55 /* DWT register unlock key */
+#define ALGO_FREQ  100U /* Algorithm frequency 100Hz */
+#define ACC_ODR  ((float)ALGO_FREQ)
+#define ACC_FS  4 /* FS = <-4g, 4g> */
+#define ALGO_PERIOD  (1000U / ALGO_FREQ) /* Algorithm period [ms] */
 #define MOTION_FX_ENGINE_DELTATIME  0.01f
 #define FROM_MG_TO_G  0.001f
 #define FROM_G_TO_MG  1000.0f
@@ -71,7 +74,7 @@ static float TempValue;
 static float HumValue;
 static volatile uint32_t TimeStamp = 0;
 static volatile uint8_t MagCalRequest = 0;
-//static MOTION_SENSOR_Axes_t MagOffset;
+static MOTION_SENSOR_Axes_t MagOffset;
 static uint8_t MagCalStatus = 0;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -148,7 +151,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   */
 static void MX_DataLogFusion_Init(void)
 {
-  //float ans_float;
+  float ans_float;
 
   /* Initialize button */
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
@@ -172,21 +175,20 @@ static void MX_DataLogFusion_Init(void)
   Init_Sensors();
 
   /* Sensor Fusion API initialization function */
-  MotionFX_manager_init();  
+  MotionFX_manager_init();
 
   /* OPTIONAL */
   /* Get library version */
   MotionFX_manager_get_version(LibVersion, &LibVersionLen);
 
-/*
-  // Enable magnetometer calibration
+  /* Enable magnetometer calibration */
   MotionFX_manager_MagCal_start(ALGO_PERIOD);
 
-  // Test if calibration data are available
+  /* Test if calibration data are available */
   MFX_MagCal_output_t mag_cal_test;
   MotionFX_MagCal_getParams(&mag_cal_test);
 
-  // If calibration data are available load HI coefficients
+  /* If calibration data are available load HI coefficients */
   if (mag_cal_test.cal_quality == MFX_MAGCALGOOD)
   {
     ans_float = (mag_cal_test.hi_bias[0] * FROM_UT50_TO_MGAUSS);
@@ -195,36 +197,6 @@ static void MX_DataLogFusion_Init(void)
     MagOffset.y = (int32_t)ans_float;
     ans_float = (mag_cal_test.hi_bias[2] * FROM_UT50_TO_MGAUSS);
     MagOffset.z = (int32_t)ans_float;
-
-    MagCalStatus = 1;
-  }
-*/
-
-  // Enable magnetometer calibration.
-  MotionMC_manager_MagCal_start( ALGO_PERIOD );
-
-  // Test if calibration data are available
-  MMC_Output_t mag_cal_test;
-  MOTION_SENSOR_Axes_t MagComp;
-
-  MotionMC_manager_get_params( &mag_cal_test );
-
-  // If calibration data are available load HI coefficients.
-  if ( mag_cal_test.CalQuality == MMC_CALQSTATUSGOOD )
-  {
-/*
-    ans_float = (mag_cal_test.HI_Bias[0] * FROM_UT50_TO_MGAUSS);
-    MagOffset.x = (int32_t)ans_float;
-
-    ans_float = (mag_cal_test.HI_Bias[1] * FROM_UT50_TO_MGAUSS);
-    MagOffset.y = (int32_t)ans_float;
-
-    ans_float = (mag_cal_test.HI_Bias[2] * FROM_UT50_TO_MGAUSS);
-    MagOffset.z = (int32_t)ans_float;
-*/
-
-    // Do hard & soft iron calibration.
-    MotionMC_manager_compensate( &MagValue, &MagComp );
 
     MagCalStatus = 1;
   }
@@ -271,6 +243,9 @@ static void MX_DataLogFusion_Process(void)
 
     /* Reset magnetometer calibration value*/
     MagCalStatus = 0;
+    MagOffset.x = 0;
+    MagOffset.y = 0;
+    MagOffset.z = 0;
 
     /* Enable magnetometer calibration */
     MotionFX_manager_MagCal_start(ALGO_PERIOD);
@@ -503,12 +478,9 @@ static void Gyro_Sensor_Handler(TMsg *Msg)
   */
 static void Magneto_Sensor_Handler(TMsg *Msg)
 {
-  //float ans_float;
-  //MFX_MagCal_input_t mag_data_in;
-  //MFX_MagCal_output_t mag_data_out;
-  MMC_Input_t data_in;
-  MMC_Output_t data_out;
-  MOTION_SENSOR_Axes_t MagComp;
+  float ans_float;
+  MFX_MagCal_input_t mag_data_in;
+  MFX_MagCal_output_t mag_data_out;
 
   if ((SensorsEnabled & MAGNETIC_SENSOR) == MAGNETIC_SENSOR)
   {
@@ -520,43 +492,38 @@ static void Magneto_Sensor_Handler(TMsg *Msg)
     }
     else
     {
-      BSP_SENSOR_MAG_GetAxes( &MagValue );
+      BSP_SENSOR_MAG_GetAxes(&MagValue);
 
-      if ( MagCalStatus == 0U )
+      if (MagCalStatus == 0U)
       {
-        data_in.TimeStamp = ( int ) TimeStamp;
-        TimeStamp += ( uint32_t ) ALGO_PERIOD;
+        mag_data_in.mag[0] = (float)MagValue.x * FROM_MGAUSS_TO_UT50;
+        mag_data_in.mag[1] = (float)MagValue.y * FROM_MGAUSS_TO_UT50;
+        mag_data_in.mag[2] = (float)MagValue.z * FROM_MGAUSS_TO_UT50;
 
-        // Convert magnetometer data from [mGauss] to [uT].
-        data_in.Mag[0] = ( float ) MagValue.x / 10.0f;
-        data_in.Mag[1] = ( float ) MagValue.y / 10.0f;
-        data_in.Mag[2] = ( float ) MagValue.z / 10.0f;
+        mag_data_in.time_stamp = (int)TimeStamp;
+        TimeStamp += (uint32_t)ALGO_PERIOD;
 
-        // Run Magnetometer Calibration algorithm.
-        MotionMC_manager_update( &data_in );
+        MotionFX_manager_MagCal_run(&mag_data_in, &mag_data_out);
 
-        // Get the magnetometer compensation for hard/soft iron.
-        MotionMC_manager_get_params( &data_out );
-
-        if ( data_out.CalQuality == MMC_CALQSTATUSGOOD )
+        if (mag_data_out.cal_quality == MFX_MAGCALGOOD)
         {
           MagCalStatus = 1;
 
-          // Do hard & soft iron calibration.
-          MotionMC_manager_compensate( &MagValue, &MagComp );
-   
-          MotionMC_manager_MagCal_stop( ALGO_PERIOD );
+          ans_float = (mag_data_out.hi_bias[0] * FROM_UT50_TO_MGAUSS);
+          MagOffset.x = (int32_t)ans_float;
+          ans_float = (mag_data_out.hi_bias[1] * FROM_UT50_TO_MGAUSS);
+          MagOffset.y = (int32_t)ans_float;
+          ans_float = (mag_data_out.hi_bias[2] * FROM_UT50_TO_MGAUSS);
+          MagOffset.z = (int32_t)ans_float;
+
+          /* Disable magnetometer calibration */
+          MotionFX_manager_MagCal_stop(ALGO_PERIOD);
         }
       }
-      else
-      {
-          // Do hard & soft iron calibration.
-          MotionMC_manager_compensate( &MagValue, &MagComp );
 
-          MagValue.x = MagComp.x;
-          MagValue.y = MagComp.y;
-          MagValue.z = MagComp.z;
-      }
+      MagValue.x = (int32_t)(MagValue.x - MagOffset.x);
+      MagValue.y = (int32_t)(MagValue.y - MagOffset.y);
+      MagValue.z = (int32_t)(MagValue.z - MagOffset.z);
     }
 
     Serialize_s32(&Msg->Data[43], MagValue.x, 4);

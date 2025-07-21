@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 # Семейство и модель мк.
-set(MCU STM32F103C6T)
+set(MCU STM32F103C8T)
 string(SUBSTRING ${MCU} 5 2 MCU_FAMILY)
 string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
 
@@ -30,12 +30,12 @@ set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FA
 #set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
 #set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
 
-add_executable(${PROJECT_NAME} syscalls.c main.c)
+add_executable(${PROJECT_NAME} system_stm32f1xx.c syscalls.c main.c)
 
 # Подключаем необходимые библиотеки.
-target_link_libraries(${PROJECT_NAME} STM32::Nano STM32::NoSys STM32::Semihosting)
+target_link_libraries(${PROJECT_NAME} PRIVATE STM32::Nano STM32::NoSys STM32::Semihosting)
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F103x6)
+target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F103xB)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -45,7 +45,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 target_compile_options(${PROJECT_NAME} PRIVATE
     # device type (cortex-m0, cortex-m3, ..)
-    -mcpu=cortex-m0 -mthumb
+    -mcpu=cortex-m3 -mthumb
     # warning
     -W -Wall -Wextra
     # optimization
@@ -59,6 +59,7 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 target_link_options(${PROJECT_NAME} PRIVATE
     -nostartfiles
     -T${CMAKE_CURRENT_SOURCE_DIR}/${MCU}x_FLASH.ld
+    -Wl,-Map=${PROJECT_NAME}.map
     LINKER:--gc-sections,--no-warn-rwx-segments,--print-memory-usage
 )
 

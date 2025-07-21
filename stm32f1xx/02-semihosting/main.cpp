@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stm32f1xx_hal.h>
 
-#define LED_Port        GPIOC
-#define LED_Pin         GPIO_PIN_13
-#define LED_PinState    GPIO_PIN_SET
+#define LED_Port     GPIOC
+#define LED_Pin      GPIO_PIN_13
+#define LED_PinState GPIO_PIN_SET
 
 /// Semihosting Initializing.
 extern "C" void initialise_monitor_handles( void );
@@ -29,9 +29,9 @@ void initGPIO()
 
     GPIO_InitTypeDef GPIO_Config =
     {
-        .Pin   = LED_Pin,
-        .Mode  = GPIO_MODE_OUTPUT_PP,
-        .Pull  = GPIO_NOPULL,
+        .Pin = LED_Pin,
+        .Mode = GPIO_MODE_OUTPUT_PP,
+        .Pull = GPIO_NOPULL,
         .Speed = GPIO_SPEED_FREQ_LOW,
     };
 
@@ -63,6 +63,4 @@ int main()
 
         printf( "Hello from STM32!\n" );
     }
-
-    return 0;
 }

@@ -32,9 +32,6 @@ extern "C" {
 void MX_MEMS_Init(void);
 void MX_MEMS_Process(void);
 
-void MotionMC_manager_MagCal_start(int sampletime);
-void MotionMC_manager_MagCal_stop(int sampletime);
-
 #ifdef __cplusplus
 }
 #endif

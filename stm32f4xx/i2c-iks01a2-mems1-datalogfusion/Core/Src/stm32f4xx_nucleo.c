@@ -201,25 +201,6 @@ int32_t BSP_LED_GetState(Led_TypeDef Led)
   * @retval None
   */
 static void LED_USER_GPIO_Init(void) {
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(BUS_BSP_LED_GPIO_PORT, BUS_BSP_LED_GPIO_PIN, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PTPIN */
-  GPIO_InitStruct.Pin = BUS_BSP_LED_GPIO_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(BUS_BSP_LED_GPIO_PORT, &GPIO_InitStruct);
-
 }
 
 /**
@@ -334,21 +315,6 @@ static void BUTTON_USER_EXTI_Callback(void)
   * @retval None
   */
 static void BUTTON_USER_GPIO_Init(void) {
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-
-  /*Configure GPIO pin : PTPIN */
-  GPIO_InitStruct.Pin = BUS_BSP_BUTTON_GPIO_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(BUS_BSP_BUTTON_GPIO_PORT, &GPIO_InitStruct);
-
 }
 
 #if (USE_BSP_COM_FEATURE > 0)

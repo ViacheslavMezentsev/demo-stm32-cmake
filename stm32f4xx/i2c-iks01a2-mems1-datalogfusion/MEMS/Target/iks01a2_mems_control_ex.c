@@ -25,8 +25,8 @@
   */
 void BSP_SENSOR_ACC_GetOrientation(char *Orientation)
 {
-  Orientation[0] = 's';
-  Orientation[1] = 'e';
+  Orientation[0] = 'n';
+  Orientation[1] = 'w';
   Orientation[2] = 'u';
 }
 
@@ -37,8 +37,8 @@ void BSP_SENSOR_ACC_GetOrientation(char *Orientation)
   */
 void BSP_SENSOR_GYR_GetOrientation(char *Orientation)
 {
-  Orientation[0] = 's';
-  Orientation[1] = 'e';
+  Orientation[0] = 'n';
+  Orientation[1] = 'w';
   Orientation[2] = 'u';
 }
 
@@ -49,8 +49,8 @@ void BSP_SENSOR_GYR_GetOrientation(char *Orientation)
   */
 void BSP_SENSOR_MAG_GetOrientation(char *Orientation)
 {
-  Orientation[0] = 's';
-  Orientation[1] = 'w';
+  Orientation[0] = 'n';
+  Orientation[1] = 'e';
   Orientation[2] = 'u';
 }
 

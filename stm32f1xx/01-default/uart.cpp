@@ -3,20 +3,20 @@
 #include <stm32f1xx_hal_usart.h>
 #include "xprintf.h"
 
-/// Используемый последовательный порт.
-#define UART huart1
-
+/// @brief  Функция для обработки ошибок.
 void Error_Handler( void );
 
+/// USART1 используется для передачи данных по последовательному порту.
 UART_HandleTypeDef huart1;
 
-void xputc( char c )
+/// @brief  Функция для передачи одного символа по последовательному порту.
+/// @param c Символ для передачи.
+extern "C" void uart_putc( int c )
 {
-    HAL_UART_Transmit( &UART, ( const uint8_t* ) &c, 1, 1 );
+    HAL_UART_Transmit( &huart1, ( const uint8_t* ) &c, 1, 1 );
 }
 
-
-/* USART1 init function */
+/// @brief  Инициализация USART1.
 void MX_USART1_UART_Init( void )
 {
     huart1.Instance = USART1;
@@ -35,6 +35,8 @@ void MX_USART1_UART_Init( void )
 }
 
 
+/// @brief  Инициализация аппаратных ресурсов USART1.
+/// @param uartHandle   Указатель на структуру дескриптора USART.
 void HAL_UART_MspInit( UART_HandleTypeDef* uartHandle )
 {
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
@@ -68,10 +70,7 @@ void HAL_UART_MspInit( UART_HandleTypeDef* uartHandle )
 }
 
 
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+/// @brief  Эта функция вызывается в случае возникновения ошибок.
 void Error_Handler( void )
 {
     /* User can add his own implementation to report the HAL error return state */

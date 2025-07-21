@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
 # Семейство и модель мк.
@@ -36,18 +37,20 @@ set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FA
 #set(CMSIS_${MCU_FAMILY}_SYSTEM                 "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32f1xx.c")
 #set(CMSIS_${MCU_FAMILY}_F103xB_STARTUP         "${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f103xb.s")
 
+stm32_get_chip_type(${MCU_FAMILY} ${MCU_MODEL} MCU_TYPE)
 stm32_fetch_cmsis(${MCU_FAMILY})
 stm32_fetch_hal(${MCU_FAMILY})
 
 find_package(CMSIS COMPONENTS ${MCU} REQUIRED)
 find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
 
-add_executable(${PROJECT_NAME} syscalls.c xprintf.c uart.cpp main.cpp)
+add_executable(${PROJECT_NAME} syscalls.c uart.cpp main.cpp)
+
+add_subdirectory(xprintf)
 
 # Подключаем необходимые библиотеки.
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE 
     HAL::STM32::${MCU_FAMILY}::RCC
-    HAL::STM32::${MCU_FAMILY}::DMA
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::UART
     HAL::STM32::${MCU_FAMILY}::USART
@@ -62,10 +65,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>
-    $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti -fno-exceptions>
 )
 
-target_link_options(${PROJECT_NAME} PRIVATE LINKER:--no-warn-rwx-segments,--print-memory-usage)
+target_link_options(${PROJECT_NAME} PRIVATE -Wl,-Map=${PROJECT_NAME}.map,--no-warn-rwx-segments,--cref,--gc-sections,--print-memory-usage)
 
 # Артефакты сборки.
 stm32_print_size_of_target(${PROJECT_NAME})

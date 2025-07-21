@@ -49,6 +49,7 @@ void setup( void )
         HAL_GPIO_WritePin( LED_USER_GPIO_Port, LED_USER_Pin, GPIO_PIN_RESET );
     }
 
+    // Настраиваем вывод DE последовательного порта.
     HAL_GPIO_WritePin( USART1_DE_GPIO_Port, USART1_DE_Pin, GPIO_PIN_SET );
 }
 

@@ -1,5 +1,6 @@
 /build
 /Project Backups
+/.PVS-Studio
 .cortex-debug*
 BROWSE.*
 .mxproject

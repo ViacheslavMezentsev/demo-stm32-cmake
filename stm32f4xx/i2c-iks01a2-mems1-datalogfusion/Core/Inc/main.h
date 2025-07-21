@@ -56,7 +56,6 @@ void publish( void );
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN EFP */
 void DisplayNumber( uint16_t number );

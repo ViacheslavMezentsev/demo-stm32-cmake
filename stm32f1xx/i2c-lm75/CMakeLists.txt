@@ -56,7 +56,7 @@ add_subdirectory(BSP)
 add_subdirectory(Core)
 add_subdirectory(User)
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     HAL::STM32::${MCU_FAMILY}::RCC
     HAL::STM32::${MCU_FAMILY}::GPIO
     HAL::STM32::${MCU_FAMILY}::I2C
