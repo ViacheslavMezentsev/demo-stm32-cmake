@@ -21,6 +21,7 @@ void init( void )
  */
 void setup( void )
 {
+    // Настройка порта для светодиода.
     LL_GPIO_ResetOutputPin( LED_USER_GPIO_Port, LED_USER_Pin );
 }
 

@@ -1,0 +1,9 @@
+/build
+/Project Backups
+/.PVS-Studio
+.cortex-debug*
+BROWSE.*
+.mxproject
+*.User.workspace
+Makefile
+STM32*.ld

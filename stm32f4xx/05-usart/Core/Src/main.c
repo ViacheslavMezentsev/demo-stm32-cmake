@@ -55,7 +55,22 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// Эта функция перенаправляет вывод printf в UART1
+PUTCHAR_PROTOTYPE
+{
+  // Замените huart1 на ваш UART
+  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+  return ch;
+}
 
+// Это нужно для поддержки scanf через UART, если потребуется
+int __io_getchar(void)
+{
+    uint8_t ch = 0;
+    // Замените huart1 на ваш UART
+    HAL_UART_Receive(&huart1, &ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
 /* USER CODE END 0 */
 
 /**

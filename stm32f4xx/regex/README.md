@@ -1,156 +1,195 @@
-# Description
+# Шаблон проекта для разработки под STM32 с использованием VS Code, CMake и GCC
 
-This repository is a template for stm32 development with VSCode and CMake in Windows/WSL.
-Main tools:
+Этот репозиторий представляет собой универсальный шаблон для разработки прошивок для микроконтроллеров **STM32**. Он использует современный подход к сборке на основе **CMake** и **GCC ARM Toolchain**, а также полностью настроен для комфортной работы в **Visual Studio Code**, включая сборку, прошивку и отладку.
 
-- [CMake](https://cmake.org/) with [stm32 toolchain](https://github.com/ObKo/stm32-cmake/)
-- [stlink](https://github.com/stlink-org/stlink)  
-- gcc arm
-- gdb
-- [WSL](https://learn.microsoft.com/en-us/windows/wsl/)*
-- [USB-IP](https://github.com/dorssel/usbipd-win/releases)*  
-*- if using WSL
+Проект является частью репозитория: [https://github.com/ViacheslavMezentsev/demo-stm32-cmake](https://github.com/ViacheslavMezentsev/demo-stm32-cmake)
 
-# Pure Windows
+## Ключевые особенности
 
-Execute `tools/install_toolchain_win_scoop.bat`. This will install scoop package manager and all required toolchain components.
+* **Кроссплатформенность:** Инструкции по настройке для Windows, Linux и Windows Subsystem for Linux (WSL).
+* **Современная система сборки:** Использование **CMake** в связке с набором скриптов [stm32-cmake](https://github.com/ObKo/stm32-cmake) для автоматического подключения драйверов HAL, CMSIS и управления сборкой.
+* **Интеграция с VS Code:** Готовые конфигурации для сборки, прошивки и пошаговой отладки прямо из редактора.
+* **Гибкость:** Легкая адаптация под любой микроконтроллер семейства STM32 путем изменения одной переменной.
+* **Поддержка отладчиков:** Настроенные профили для J-Link, ST-Link, CMSIS-DAP и других через OpenOCD, pyocd.
 
-# Windows + WSL
+## Требования
 
-## First step: WSL installation
+Перед началом работы убедитесь, что у вас установлены следующие инструменты:
 
-This toolchain was tested in WSL2 with Ubuntu 22.04. Without deep dive I was unable to make it work in Ubuntu 20.04.
-Suggested installation:
+* **Visual Studio Code**
+* **ARM GCC Toolchain** (компилятор `arm-none-eabi-gcc`)
+* **CMake** (версия 3.16 или выше)
+* **Ninja** (рекомендуемая система сборки для CMake)
+* **Драйверы для вашего отладчика** (ST-Link, J-Link и т.д.)
+* **OpenOCD** (требуется для большинства отладчиков)
+* **Git**
 
-0. (optional) Install Windows Terminal
-1. Run
+## Начало работы: Клонирование репозитория
 
-   ```
-   wsl --install
-   ```
+**Очень важно** клонировать репозиторий с флагом `--recurse-submodules`, чтобы автоматически загрузить `stm32-cmake`, который является неотъемлемой частью проекта.
 
-If wsl is already installed, it is possible to add new distribution:
+```bash
+git clone --recurse-submodules https://github.com/ViacheslavMezentsev/demo-stm32-cmake.git
+cd demo-stm32-cmake
+```
 
-0. (optional) Install Windows Terminal
-1. Open PowerShell
-2. Run
+## 1. Настройка окружения
 
-    ```
-    curl (("https://cloud-images.ubuntu.com",
-    "wsl/jammy/current/",
-    "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/") `
-    --output ubuntu-22.04-tar.gz
-    ```
+Выберите инструкцию для вашей операционной системы.
 
-    This will download Ubuntu 22.04 image. You can [browse](https://cloud-images.ubuntu.com/wsl) other images if you need a different version.  
-3. Run
+### Вариант А: Windows (нативная сборка)
 
-    ```
-    wsl --import <Distribution Name> <Installation Folder> <Ubuntu WSL2 Image Tarball path>
+1. **Установите менеджер пакетов Scoop** (рекомендуется) для быстрой установки. Откройте PowerShell и выполните:
+
+    ```powershell
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+    irm get.scoop.sh | iex
     ```
 
-    This will add additional distribution to WSL.  
-    Example:
+2. **Установите все необходимые инструменты** одной командой в PowerShell:
 
-    ```
-    wsl --import Ubuntu-stm32  "C:\Users\<Username>\Documents\Ubuntu-stm32" .\ubuntu-22.04-tar.gz
-    ```
-
-    At this point the distributon is added. By default tere is only root user. We need to create new user.  
-4. Run  
-`wsl -d <Distribution Name>`
-We've now entered ubuntu shell.  
-1. Run  
-`NEW_USER=<USERNAME>`
-This will store username for future use.  
-  
-    Next, create user and set password:  
-    `useradd -m -G sudo -s /bin/bash "$NEW_USER"`  
-    `passwd "$NEW_USER"`  
-1. Run
-
-    ```
-    tee /etc/wsl.conf <<_EOF
-    [user]
-    default=${NEW_USER}
-    _EOF
+    ```powershell
+    scoop install gcc-arm-none-eabi cmake ninja openocd
     ```
 
-    This will change created user to be the default when you log in.  
-2. Run  
-`logout`  
-to exit wsl and then run
-`wsl --terminate <Distribution Name>`  
-to close wsl.
+3. Если вы устанавливали инструменты вручную, убедитесь, что пути к `bin` директориям каждого инструмента добавлены в системную переменную `PATH`.
 
-You can use steps 3-7 to create additional WSL distributions.
+### Вариант Б: Linux (Ubuntu / Debian)
 
-First step was done using guide by [cloudbytes.dev](https://cloudbytes.dev/snippets/how-to-install-multiple-instances-of-ubuntu-in-wsl2)
+1. Откройте терминал и установите все необходимые пакеты:
 
-## Second step: Setting up WSL
-
-1. Launch VSCode.
-2. Install [WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl).
-3. Open new WSL window using distro created in the first step.  
-3.1 (optional) Open terminal in vscode and create folder sctructure.
-Example:  
-`mkdir repos && cd repos`
-4. Clone this repository with submodules.  
-`git clone --recurse-submodules https://github.com/Dooez/stm32-template`  
-5. Open cloned folder in VSCode.
-6. Install suggested extensions.
-7. Run  
-`sudo ./install_toolchain.sh $USER`  
-This will install required tools and set up usbip in WSL.
-8. After script finished, reboot WSL.
-
-## Thirds step: Setting up USB-IP
-
-1. Install [USB-IP](https://github.com/dorssel/usbipd-win/releases)
-2. Open PowerShell
-3. Run  
-`usbipd wsl list`  
-    This will show list of devices. Find your busid of youe STLink device:
-
-    ```
-    BUSID  VID:PID    DEVICE           STATE
-    1-1    0483:3748  STM32 STLink     Not attached
+    ```bash
+    sudo apt update
+    sudo apt install build-essential gcc-arm-none-eabi cmake ninja-build openocd
     ```
 
-    In this case busid is 1-1
-4. Run  
-`usbipd wsl attach --busid <busid> -d <Distribution Name>`  
-This will attach STLink to WSL. To check if everyuthing is working run  
-`usbipd wsl list`  
+### Вариант В: Windows + WSL2 (рекомендуется для продвинутых пользователей)
 
-    You should see
+Этот метод позволяет вести разработку в Linux-окружении, находясь в Windows.
 
-    ```
-    BUSID  VID:PID    DEVICE           STATE
-    1-1    0483:3748  STM32 STLink     Attached - Ubuntu-22.04
+1. **Установите WSL2 и дистрибутив Ubuntu.** Откройте PowerShell от имени администратора:
+
+    ```bash
+    wsl --install
     ```
 
-5. (optinal) Run in WSL  
-`lsusb`  
-And you should see your device
+    Перезагрузите компьютер по завершении.
 
+2. **Установите инструменты внутри WSL.** Откройте терминал WSL (Ubuntu) и выполните команду, как в Linux:
+
+    ```bash
+    sudo apt update
+    sudo apt install build-essential gcc-arm-none-eabi cmake ninja-build openocd
     ```
-    Bus 001 Device 002: ID 0483:3748 STMicroelectronics ST-LINK/V2
-    ```
 
-You will need to repeat this step when you reboot WSL or host machine
+3. **Настройте проброс USB-устройств в WSL.** Для отладки и прошивки из WSL необходимо "пробросить" USB-устройство (отладчик или USB-TTL адаптер) из Windows в подсистему Linux.
+    * **Установите `usbipd-win` в Windows.** Скачайте последний `.msi` установщик со [страницы релизов](https://github.com/dorssel/usbipd-win/releases) и установите его.
+    * **Подключите отладчик.** Откройте PowerShell **от имени администратора**. Найдите ваше устройство:
 
-See [usbipd wiki](https://github.com/dorssel/usbipd-win/wiki/WSL-support) for more detailed info.
+        ```powershell
+        usbipd wsl list
+        ```
 
-# Usage
+        Вы увидите список устройств. Найдите ваш отладчик (например, ST-LINK).
+    * **Привяжите устройство к WSL:**
 
-1. After running installation shell script, installing the extensions and relaunching VSCode CMake Tools should ask for kit. If not, you may select kit from bottom panel. If everything is successfully installed, arm-none-eabi will be available, this is the kit you need.
-2. Open CMakeLists.txt and change MCU model to match your device. After saving CMakeLists.txt CMake Tools extension will run configuration and all dependencies should be downloaded. Read [stm32-cmake](https://github.com/ObKo/stm32-cmake/) documentation on how to use it. `fetch_svd(<mcu>)` and `update_launch_json()` CMake function will download SVD file and update `launch.json` fields marked by comment `... /* #update this field with CMake */`
-4. Copy `stm32<>xx_hal_conf.h` configured (by STM32CubeMX for example) for your board.
-5. To build use [CMake: build] build task (Ctrl + Shift + B by default) or hotkey (F7 by default).
-To flash and erase use [ST Flash] and [ST Erase] tasks.
-1. For debugging use Run and Debug window (Ctrl + Shift + D by default) or hotkey (F5).
+        ```powershell
+        # Замените <busid> на ID вашего устройства из списка выше
+        usbipd wsl attach --busid <busid> --distribution <имя-вашего-дистрибутива>
+        ```
 
-# Acknowlegment
+    * Эту операцию нужно повторять после каждой перезагрузки компьютера.
 
-[Guide by ERBO-Engineering](https://medium.com/@erbo-engineering/using-vs-code-for-embedded-stm32-development-14405ed4ac82).
+## 2. Настройка Visual Studio Code
+
+1. Откройте папку с проектом в VS Code.
+2. VS Code предложит установить рекомендованные расширения. Согласитесь. Если нет, установите их вручную:
+    * **C/C++** (`ms-vscode.cpptools`): Основное расширение для работы с C/C++.
+    * **CMake Tools** (`ms-vscode.cmake-tools`): Интеграция с CMake для сборки.
+    * **Cortex-Debug** (`marus25.cortex-debug`): **Ключевое расширение** для пошаговой отладки ARM-микроконтроллеров.
+    * **Serial Monitor** (`ms-vscode.vscode-serial-monitor`): Удобный инструмент для работы с UART прямо в VS Code.
+
+После установки расширений `CMake Tools` автоматически сконфигурирует проект. Выберите ваш `arm-none-eabi-gcc` компилятор в появившемся окне.
+
+## 3. Конфигурация проекта под ваш микроконтроллер
+
+Все основные настройки проекта находятся в файле `CMakeLists.txt`.
+
+### 1. Указание модели микроконтроллера
+
+Это самый важный шаг. Найдите строку и укажите вашу модель МК:
+
+```cmake
+# Микроконтроллер (можно переопределять через -D).
+set(MCU STM32F401CCT CACHE STRING "Target STM32 microcontroller")
+```
+
+`stm32-cmake` автоматически определит семейство (`F4`), тип (`F401xC`) и другие параметры из этого значения.
+
+### 2. Указание пути к STM32Cube Firmware
+
+`stm32-cmake` должен знать, где находятся файлы HAL и CMSIS. Укажите путь к папке с драйверами для вашего семейства.
+
+```cmake
+# stm32-cmake автоматически определяет семейство (FAMILY) ...
+stm32_get_chip_info(${MCU} FAMILY MCU_FAMILY TYPE MCU_TYPE)
+
+# Укажите путь к вашему пакету прошивок (Cube FW)
+set(STM32_CUBE_${MCU_FAMILY}_PATH "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_V1.28.2/Drivers")
+```
+
+Вы можете либо скачать пакет вручную, либо указать путь к репозиторию, управляемому STM32CubeMX.
+
+### 3. Подключение драйверов HAL
+
+В секции `target_link_libraries` перечислите все модули HAL, которые вы используете в проекте (например, `RCC`, `GPIO`, `UART`).
+
+```cmake
+target_link_libraries(${PROJECT_NAME}
+    HAL::STM32::${MCU_FAMILY}::RCC
+    HAL::STM32::${MCU_FAMILY}::GPIO
+    HAL::STM32::${MCU_FAMILY}::UART
+    # ... другие модули
+)
+```
+
+### 4. Настройка памяти
+
+При необходимости измените размеры стека и кучи:
+
+```cmake
+set(HEAP_SIZE "0K" CACHE STRING "Required amount of heap")
+set(STACK_SIZE "1K" CACHE STRING "Required amount of stack")
+```
+
+После каждого изменения `CMakeLists.txt` CMake автоматически переконфигурирует проект.
+
+## 4. Сборка, прошивка и отладка
+
+### Сборка
+
+* Нажмите `Ctrl+Shift+B` и выберите **CMake: build**.
+* Либо нажмите кнопку **Build** на синей строке состояния внизу окна VS Code.
+
+### Прошивка
+
+В файле `tasks.json` настроены задачи для прошивки через разные утилиты.
+
+* Откройте палитру команд (`Ctrl+Shift+P`), введите `Tasks: Run Task` и выберите нужный вариант (например, `Прошить (st-flash)`).
+
+### Отладка
+
+Это самая удобная часть шаблона.
+
+1. Перейдите во вкладку "Run and Debug" (Ctrl+Shift+D).
+2. Вверху выберите профиль отладки, соответствующий вашему отладчику (например, `Debug (ocd/stlink)`).
+3. Нажмите **F5**. VS Code автоматически соберет проект, прошьет его и остановит выполнение в начале функции `main()`.
+4. Используйте панель отладки для пошагового выполнения, установки точек останова и просмотра переменных.
+
+### Отладка через UART
+
+Вы можете использовать `printf` для вывода отладочной информации через UART.
+
+* **В VS Code:** Используйте расширение **Serial Monitor**. Нажмите на иконку розетки в строке состояния, выберите COM-порт и скорость.
+* **Внешние программы:** Используйте любую терминальную программу, например, **PuTTY** или **Minicom**.
+* **Для пользователей WSL:** Чтобы получить доступ к USB-TTL адаптеру, его нужно так же "пробросить" в WSL с помощью утилиты `usbipd-win`, как и отладчик.

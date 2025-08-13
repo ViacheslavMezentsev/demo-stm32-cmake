@@ -1,11 +1,195 @@
-# STM32 and Ethernet, part 1. ENC28J60 driver.
+# Шаблон проекта для разработки под STM32 с использованием VS Code, CMake и GCC
 
-Bunch of projects for STM32 Ethernet connection based on ENC28J60 IC physical layer. The first part is devoted to creating ENC28J60 SPI driver and its configuration and setting up. Here is a basic connection diagram:
+Этот репозиторий представляет собой универсальный шаблон для разработки прошивок для микроконтроллеров **STM32**. Он использует современный подход к сборке на основе **CMake** и **GCC ARM Toolchain**, а также полностью настроен для комфортной работы в **Visual Studio Code**, включая сборку, прошивку и отладку.
 
-<img src="https://microtechnics.ru/wp-content/uploads/2021/08/enc28j60-connection.jpg" width="400">
+Проект является частью репозитория: [https://github.com/ViacheslavMezentsev/demo-stm32-cmake](https://github.com/ViacheslavMezentsev/demo-stm32-cmake)
 
-Demo project uses SPI1 peripheral of STM32F103C8 and well-known development board BluePill. List of used peripherals includes SPI lines and some GPIOs in output mode:
+## Ключевые особенности
 
-<img src="https://microtechnics.ru/wp-content/uploads/2021/08/stm32cubemx.jpg" width="400">
+* **Кроссплатформенность:** Инструкции по настройке для Windows, Linux и Windows Subsystem for Linux (WSL).
+* **Современная система сборки:** Использование **CMake** в связке с набором скриптов [stm32-cmake](https://github.com/ObKo/stm32-cmake) для автоматического подключения драйверов HAL, CMSIS и управления сборкой.
+* **Интеграция с VS Code:** Готовые конфигурации для сборки, прошивки и пошаговой отладки прямо из редактора.
+* **Гибкость:** Легкая адаптация под любой микроконтроллер семейства STM32 путем изменения одной переменной.
+* **Поддержка отладчиков:** Настроенные профили для J-Link, ST-Link, CMSIS-DAP и других через OpenOCD, pyocd.
 
-If you need a full description in addition to the sources, it can be found on [my site](https://microtechnics.ru/stm32-i-ethernet-chast-1-podklyuchenie-i-nastrojka-enc28j60/).
+## Требования
+
+Перед началом работы убедитесь, что у вас установлены следующие инструменты:
+
+* **Visual Studio Code**
+* **ARM GCC Toolchain** (компилятор `arm-none-eabi-gcc`)
+* **CMake** (версия 3.16 или выше)
+* **Ninja** (рекомендуемая система сборки для CMake)
+* **Драйверы для вашего отладчика** (ST-Link, J-Link и т.д.)
+* **OpenOCD** (требуется для большинства отладчиков)
+* **Git**
+
+## Начало работы: Клонирование репозитория
+
+**Очень важно** клонировать репозиторий с флагом `--recurse-submodules`, чтобы автоматически загрузить `stm32-cmake`, который является неотъемлемой частью проекта.
+
+```bash
+git clone --recurse-submodules https://github.com/ViacheslavMezentsev/demo-stm32-cmake.git
+cd demo-stm32-cmake
+```
+
+## 1. Настройка окружения
+
+Выберите инструкцию для вашей операционной системы.
+
+### Вариант А: Windows (нативная сборка)
+
+1. **Установите менеджер пакетов Scoop** (рекомендуется) для быстрой установки. Откройте PowerShell и выполните:
+
+    ```powershell
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+    irm get.scoop.sh | iex
+    ```
+
+2. **Установите все необходимые инструменты** одной командой в PowerShell:
+
+    ```powershell
+    scoop install gcc-arm-none-eabi cmake ninja openocd
+    ```
+
+3. Если вы устанавливали инструменты вручную, убедитесь, что пути к `bin` директориям каждого инструмента добавлены в системную переменную `PATH`.
+
+### Вариант Б: Linux (Ubuntu / Debian)
+
+1. Откройте терминал и установите все необходимые пакеты:
+
+    ```bash
+    sudo apt update
+    sudo apt install build-essential gcc-arm-none-eabi cmake ninja-build openocd
+    ```
+
+### Вариант В: Windows + WSL2 (рекомендуется для продвинутых пользователей)
+
+Этот метод позволяет вести разработку в Linux-окружении, находясь в Windows.
+
+1. **Установите WSL2 и дистрибутив Ubuntu.** Откройте PowerShell от имени администратора:
+
+    ```bash
+    wsl --install
+    ```
+
+    Перезагрузите компьютер по завершении.
+
+2. **Установите инструменты внутри WSL.** Откройте терминал WSL (Ubuntu) и выполните команду, как в Linux:
+
+    ```bash
+    sudo apt update
+    sudo apt install build-essential gcc-arm-none-eabi cmake ninja-build openocd
+    ```
+
+3. **Настройте проброс USB-устройств в WSL.** Для отладки и прошивки из WSL необходимо "пробросить" USB-устройство (отладчик или USB-TTL адаптер) из Windows в подсистему Linux.
+    * **Установите `usbipd-win` в Windows.** Скачайте последний `.msi` установщик со [страницы релизов](https://github.com/dorssel/usbipd-win/releases) и установите его.
+    * **Подключите отладчик.** Откройте PowerShell **от имени администратора**. Найдите ваше устройство:
+
+        ```powershell
+        usbipd wsl list
+        ```
+
+        Вы увидите список устройств. Найдите ваш отладчик (например, ST-LINK).
+    * **Привяжите устройство к WSL:**
+
+        ```powershell
+        # Замените <busid> на ID вашего устройства из списка выше
+        usbipd wsl attach --busid <busid> --distribution <имя-вашего-дистрибутива>
+        ```
+
+    * Эту операцию нужно повторять после каждой перезагрузки компьютера.
+
+## 2. Настройка Visual Studio Code
+
+1. Откройте папку с проектом в VS Code.
+2. VS Code предложит установить рекомендованные расширения. Согласитесь. Если нет, установите их вручную:
+    * **C/C++** (`ms-vscode.cpptools`): Основное расширение для работы с C/C++.
+    * **CMake Tools** (`ms-vscode.cmake-tools`): Интеграция с CMake для сборки.
+    * **Cortex-Debug** (`marus25.cortex-debug`): **Ключевое расширение** для пошаговой отладки ARM-микроконтроллеров.
+    * **Serial Monitor** (`ms-vscode.vscode-serial-monitor`): Удобный инструмент для работы с UART прямо в VS Code.
+
+После установки расширений `CMake Tools` автоматически сконфигурирует проект. Выберите ваш `arm-none-eabi-gcc` компилятор в появившемся окне.
+
+## 3. Конфигурация проекта под ваш микроконтроллер
+
+Все основные настройки проекта находятся в файле `CMakeLists.txt`.
+
+### 1. Указание модели микроконтроллера
+
+Это самый важный шаг. Найдите строку и укажите вашу модель МК:
+
+```cmake
+# Микроконтроллер (можно переопределять через -D).
+set(MCU STM32F401CCT CACHE STRING "Target STM32 microcontroller")
+```
+
+`stm32-cmake` автоматически определит семейство (`F4`), тип (`F401xC`) и другие параметры из этого значения.
+
+### 2. Указание пути к STM32Cube Firmware
+
+`stm32-cmake` должен знать, где находятся файлы HAL и CMSIS. Укажите путь к папке с драйверами для вашего семейства.
+
+```cmake
+# stm32-cmake автоматически определяет семейство (FAMILY) ...
+stm32_get_chip_info(${MCU} FAMILY MCU_FAMILY TYPE MCU_TYPE)
+
+# Укажите путь к вашему пакету прошивок (Cube FW)
+set(STM32_CUBE_${MCU_FAMILY}_PATH "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_V1.28.2/Drivers")
+```
+
+Вы можете либо скачать пакет вручную, либо указать путь к репозиторию, управляемому STM32CubeMX.
+
+### 3. Подключение драйверов HAL
+
+В секции `target_link_libraries` перечислите все модули HAL, которые вы используете в проекте (например, `RCC`, `GPIO`, `UART`).
+
+```cmake
+target_link_libraries(${PROJECT_NAME}
+    HAL::STM32::${MCU_FAMILY}::RCC
+    HAL::STM32::${MCU_FAMILY}::GPIO
+    HAL::STM32::${MCU_FAMILY}::UART
+    # ... другие модули
+)
+```
+
+### 4. Настройка памяти
+
+При необходимости измените размеры стека и кучи:
+
+```cmake
+set(HEAP_SIZE "0K" CACHE STRING "Required amount of heap")
+set(STACK_SIZE "1K" CACHE STRING "Required amount of stack")
+```
+
+После каждого изменения `CMakeLists.txt` CMake автоматически переконфигурирует проект.
+
+## 4. Сборка, прошивка и отладка
+
+### Сборка
+
+* Нажмите `Ctrl+Shift+B` и выберите **CMake: build**.
+* Либо нажмите кнопку **Build** на синей строке состояния внизу окна VS Code.
+
+### Прошивка
+
+В файле `tasks.json` настроены задачи для прошивки через разные утилиты.
+
+* Откройте палитру команд (`Ctrl+Shift+P`), введите `Tasks: Run Task` и выберите нужный вариант (например, `Прошить (st-flash)`).
+
+### Отладка
+
+Это самая удобная часть шаблона.
+
+1. Перейдите во вкладку "Run and Debug" (Ctrl+Shift+D).
+2. Вверху выберите профиль отладки, соответствующий вашему отладчику (например, `Debug (ocd/stlink)`).
+3. Нажмите **F5**. VS Code автоматически соберет проект, прошьет его и остановит выполнение в начале функции `main()`.
+4. Используйте панель отладки для пошагового выполнения, установки точек останова и просмотра переменных.
+
+### Отладка через UART
+
+Вы можете использовать `printf` для вывода отладочной информации через UART.
+
+* **В VS Code:** Используйте расширение **Serial Monitor**. Нажмите на иконку розетки в строке состояния, выберите COM-порт и скорость.
+* **Внешние программы:** Используйте любую терминальную программу, например, **PuTTY** или **Minicom**.
+* **Для пользователей WSL:** Чтобы получить доступ к USB-TTL адаптеру, его нужно так же "пробросить" в WSL с помощью утилиты `usbipd-win`, как и отладчик.

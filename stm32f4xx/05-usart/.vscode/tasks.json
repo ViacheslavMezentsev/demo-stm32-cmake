@@ -5,11 +5,55 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "targets": [ "all" ],
+      "targets": [
+        "all"
+      ],
       "problemMatcher": [],
       "group": "build"
     },
-    // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
+    {
+        "label": "start-qemu-session",
+        "type": "shell",
+        // Убедитесь, что команда указывает на ваш работающий qemu
+        "command": "qemu-system-arm",
+        "args": [
+            // 1. Указываем точную модель платы из документации
+            "-machine", "ast1030-evb",
+
+            // 2. Явно указываем CPU (хотя плата выставит его по умолчанию, это для ясности)
+            "-cpu", "cortex-m4",
+
+            // 3. Загружаем прошивку через опцию -image, как рекомендуется для МК
+            "-bios", "${command:cmake.buildDirectory}/${command:cmake.buildTargetName}.elf",
+
+            // 4. Отключаем графический вывод
+            "-nographic",
+
+            // 5. Перенаправляем UART в TCP сокет для PuTTY
+            //"-serial", "tcp::4321,server,nowait",
+            "-semihosting-config", "enable=on,target=native",
+
+            // 6. Открываем GDB сервер и ждем подключения отладчика
+            "-s",
+            "-S"
+        ],
+        "isBackground": true,
+        "problemMatcher": {
+            "pattern": [
+                {
+                    "regexp": ".",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                }
+            ],
+            "background": {
+                "activeOnStart": true,
+                "beginsPattern": "^$",
+                "endsPattern": "^$"
+            }
+        }
+    },
     {
       "label": "Сбросить (j-link)",
       "type": "shell",
@@ -18,7 +62,9 @@
         "/C",
         "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo q) > flash.jlink) && (JLink.exe -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Сброс мк (j-link)."
     },
@@ -30,7 +76,9 @@
         "/C",
         "((echo r & echo h & echo erase & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Полная очистка мк (j-link)."
     },
@@ -42,7 +90,9 @@
         "/C",
         "((echo r & echo h & echo loadfile ${command:cmake.buildType}/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Прошивка мк (j-link)."
     },
@@ -54,7 +104,9 @@
         "/C",
         "((echo h & echo r & echo п & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Выполняет команду go (j-link)."
     },
@@ -62,8 +114,13 @@
       "label": "Сброс (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "pyocd reset -t ${config:device} -m sw" ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "pyocd reset -t ${config:device} -m sw"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Сброс мк (pyocd)."
     },
@@ -71,8 +128,13 @@
       "label": "Очистить всё (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "pyocd erase -t ${config:device} --mass"],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "pyocd erase -t ${config:device} --mass"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Полная очистка мк (pyocd)."
     },
@@ -80,8 +142,13 @@
       "label": "Прошить (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "pyocd flash -t ${config:device} ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "pyocd flash -t ${config:device} ${command:cmake.buildType}/${workspaceFolderBasename}.hex"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Прошивка мк (pyocd)."
     },
@@ -89,8 +156,13 @@
       "label": "Сброс (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "st-flash reset" ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "st-flash reset"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Сброс мк (st-flash)."
     },
@@ -98,8 +170,13 @@
       "label": "Очистить всё (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "st-flash erase"],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "st-flash erase"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Полная очистка мк (st-flash)."
     },
@@ -107,10 +184,26 @@
       "label": "Прошить (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [ "/C", "st-flash --reset --format \"ihex\" --freq=4000k write ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
-      "options": { "cwd": "${workspaceFolder}/build" },
+      "args": [
+        "/C",
+        "st-flash --reset --format \"ihex\" --freq=4000k write ${command:cmake.buildType}/${workspaceFolderBasename}.hex"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
       "group": "build",
       "detail": "Прошивка мк (st-flash)."
+    },
+    {
+      "type": "cmake",
+      "label": "CMake: очистка перестроения",
+      "command": "cleanRebuild",
+      "targets": [
+        "all"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "detail": "Задача шаблона CMake очистка перестроения"
     }
   ]
 }

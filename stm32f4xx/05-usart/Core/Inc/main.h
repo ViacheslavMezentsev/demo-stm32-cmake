@@ -63,7 +63,11 @@ void loop( void );
 #define LED_USER_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#ifdef __GNUC__
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
