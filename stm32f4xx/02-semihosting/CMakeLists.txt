@@ -19,7 +19,7 @@ ensure_default_value(ioc_file "") # По умолчанию .ioc файл не �
 if(ioc_file)
     message(STATUS "Обнаружена настройка 'ioc_file'. Загрузка конфигурации из: ${ioc_file}")
     set(IOC_FILE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${ioc_file}")
-    
+
     # Вызываем парсер для .ioc файла
     parse_ioc_file(${IOC_FILE_PATH} "IOC_")
 
@@ -108,32 +108,41 @@ foreach(src_item IN LISTS sources)
     string(TOLOWER ${filename} filename_lower)
 
     # --- ПРОВЕРКА НА ОСОБЫЕ СИСТЕМНЫЕ ФАЙЛЫ ---
+    # Мы выполняем эту проверку, только если автоматическое подключение HAL включено.
+    set(is_special_file FALSE) # Флаг, чтобы избежать двойной обработки
 
     # Если файл найден, мы устанавливаем переменную для stm32-cmake
-    # и НЕ добавляем его в список для прямой компиляции.    
-    if(filename_lower STREQUAL SYSTEM_FILENAME_TARGET)
-        set(CMSIS_${MCU_FAMILY}_SYSTEM ${full_path})
-        message(STATUS "Обнаружен пользовательский system-файл. Переопределение: ${full_path}")
+    # и НЕ добавляем его в список для прямой компиляции.
+    if(use_hal_components)
+        if(filename_lower STREQUAL SYSTEM_FILENAME_TARGET)
+            set(CMSIS_${MCU_FAMILY}_SYSTEM ${full_path})
+            message(STATUS "Обнаружен пользовательский system-файл. Переопределение: ${full_path}")
+            set(is_special_file TRUE)
 
-    elseif(filename_lower MATCHES ${STARTUP_FILENAME_PATTERN})
-        set(CMSIS_${MCU_FAMILY}_${MCU_TYPE}_STARTUP ${full_path})
-        message(STATUS "Обнаружен пользовательский startup-файл. Переопределение: ${full_path}")
-    
+        elseif(filename_lower MATCHES ${STARTUP_FILENAME_PATTERN})
+            set(CMSIS_${MCU_FAMILY}_${MCU_TYPE}_STARTUP ${full_path})
+            message(STATUS "Обнаружен пользовательский startup-файл. Переопределение: ${full_path}")
+            set(is_special_file TRUE)
+        endif()
+    endif()
+
     # --- СТАНДАРТНАЯ ОБРАБОТКА ОСТАЛЬНЫХ ФАЙЛОВ ---
+    # Этот блок будет выполнен, только если файл не был определен как специальный.
+    if(NOT is_special_file)
+        # Вариант 1: Если это директория, подключаем ее как модуль.
+        if(IS_DIRECTORY ${full_path})
+            #message(STATUS "Подключение модуля из директории: ${src_item}")
+            add_subdirectory(${src_item})
 
-    # Вариант 1: Если это директория, подключаем ее как модуль.
-    elseif(IS_DIRECTORY ${full_path})
-        #message(STATUS "Подключение модуля из директории: ${src_item}")
-        add_subdirectory(${src_item})
+        # Вариант 2: Если это существующий файл, добавляем его в список исходников.
+        elseif(EXISTS ${full_path})
+            #message(STATUS "Добавление исходного файла: ${src_item}")
+            list(APPEND PROJECT_SOURCES ${full_path})
 
-    # Вариант 2: Если это существующий файл, добавляем его в список исходников.
-    elseif(EXISTS ${full_path})
-        #message(STATUS "Добавление исходного файла: ${src_item}")
-        list(APPEND PROJECT_SOURCES ${full_path})
-
-    # Вариант 3: Если путь не найден.
-    else()
-        message(WARNING "Источник '${src_item}' не найден и будет проигнорирован.")
+        # Вариант 3: Если путь не найден.
+        else()
+            message(WARNING "Источник '${src_item}' не найден и будет проигнорирован.")
+        endif()
     endif()
 endforeach()
 
@@ -149,7 +158,7 @@ if(use_hal_components)
     # Разворачиваем окружение сборки (STM32Cube MCU Firmware Package).
     if(cubefw_package STREQUAL "auto")
         message(STATUS "Режим 'auto': поиск драйверов...")
-        
+
         # ПРИОРИТЕТ 1: Ищем локальные драйверы в папке проекта
         set(LOCAL_DRIVERS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Drivers")
 
@@ -158,15 +167,15 @@ if(use_hal_components)
             # Напрямую устанавливаем пути к локальным драйверам
             set(STM32_CMSIS_PATH                "${LOCAL_DRIVERS_PATH}/CMSIS")
             set(STM32_HAL_${MCU_FAMILY}_PATH    "${LOCAL_DRIVERS_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
-            set(CUBEFW_PACKAGE "local") # Устанавливаем флаг, что используются локальные драйверы        
+            set(CUBEFW_PACKAGE "local") # Устанавливаем флаг, что используются локальные драйверы
             message(STATUS "STM32Cube MCU Firmware Package: ${CUBEFW_PACKAGE}")
 
         # ПРИОРИТЕТ 2: Если локальные не найдены, ищем последнюю версию в пользовательском репозитории
         else()
             message(STATUS "Локальные драйверы не найдены. Поиск последней версии в пользовательском репозитории...")
             set(CUBE_REPO_PATH "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository")
-            
-            find_latest_stm32_cube_fw(${MCU_FAMILY} ${CUBE_REPO_PATH} LATEST_FW_VERSION)       
+
+            find_latest_stm32_cube_fw(${MCU_FAMILY} ${CUBE_REPO_PATH} LATEST_FW_VERSION)
             set(CUBEFW_PACKAGE ${LATEST_FW_VERSION})
 
             # Устанавливаем пути на основе найденной глобальной версии.
@@ -177,19 +186,19 @@ if(use_hal_components)
                  set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
             endif()
         endif()
-    
+
     # Сценарий, когда версия указана явно.
     else()
         # Используем версию, указанную пользователем.
         set(CUBEFW_PACKAGE ${cubefw_package})
         message(STATUS "Использование указанной версии STM32Cube FW: ${CUBEFW_PACKAGE}")
-        
+
         # Устанавливаем пути на основе указанной глобальной версии.
         set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CUBEFW_PACKAGE}/Drivers")
         set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
         set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
     endif()
-    
+
     # Финальная проверка и установка пути к CMSIS Device
     if(NOT DEFINED STM32_CMSIS_PATH)
         message(FATAL_ERROR "Не удалось определить пути к драйверам HAL/CMSIS. Проверьте настройки 'cubefw_package' или наличие драйверов.")
@@ -214,9 +223,6 @@ if(use_hal_components)
 
         target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER)
 
-        # CMSIS и некоторые дополнительные компоненты. 
-        target_link_libraries(${PROJECT_NAME} PRIVATE CMSIS::STM32::${MCU_TYPE})
-
         # Проверяем, есть ли среди компонентов LL-драйверы.
         set(LL_DRIVER_FOUND FALSE)
         foreach(component IN LISTS hal_components)
@@ -225,7 +231,7 @@ if(use_hal_components)
                 break()
             endif()
         endforeach()
-        
+
         if(LL_DRIVER_FOUND)
             #message(STATUS "Обнаружены LL компоненты. Автоматически добавляется определение: USE_FULL_LL_DRIVER")
             target_compile_definitions(${PROJECT_NAME} PRIVATE USE_FULL_LL_DRIVER)
@@ -235,12 +241,6 @@ else()
     message(STATUS "Автоматическое подключение компонентов HAL/LL отключено. Убедитесь, что все необходимые исходники указаны в секции 'sources'.")
     set(HAL_TARGETS "") # Убеждаемся, что список целей HAL пуст
 endif()
-
-# Теперь подключаем все библиотеки одним вызовом.
-target_link_libraries(${PROJECT_NAME} PRIVATE    
-    ${HAL_TARGETS}              # Сформированный список HAL-компонентов
-    ${link_libraries}           # Дополнительные библиотеки
-)
 
 # Добавляем системные библиотеки C/C++.
 # Использование newlib-nano для уменьшения размера кода.
@@ -266,12 +266,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 # Добавляем определения компилятора из конфига + обязательные.
 # Примечание: STM32${MCU_TYPE} генерируется CMake, его лучше оставить здесь для надежности.
-target_compile_definitions(${PROJECT_NAME} PRIVATE 
+target_compile_definitions(${PROJECT_NAME} PRIVATE
     ${compile_definitions}
     STM32${MCU_TYPE}
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE 
+target_compile_options(${PROJECT_NAME} PRIVATE
 #    $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>    # для симуляции в Proteus
     $<$<CONFIG:DEBUG>:-O0 -g3>
     $<$<COMPILE_LANGUAGE:CXX>:-fpermissive -fno-exceptions -fno-rtti -fno-unwind-tables -fno-threadsafe-statics -fno-use-cxa-atexit -fstrict-enums>
@@ -294,30 +294,41 @@ endforeach()
 
 # 6. ГЕНЕРАЦИЯ ФАЙЛОВ И АРТЕФАКТОВ СБОРКИ.
 
+# Переменная для хранения пути к найденному скрипту.
+set(LINKER_SCRIPT_PATH "")
+
 # Управление скриптом компоновщика.
 if(linker_script STREQUAL "auto")
-    # Размеры кучи и стека (можно переопределять через -D).
-    # Нормализуем значения размеров памяти в байты.
-    normalize_memory(heap_size)
-    normalize_memory(stack_size)
-
-    set(HEAP_SIZE ${heap_size} CACHE STRING "Required amount of heap")
-    set(STACK_SIZE ${stack_size} CACHE STRING "Required amount of stack")
-
-    # Проверяем версию GCC и задаём USE_READONLY.
-    if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
-        set(USE_READONLY "(READONLY)")
-        message(STATUS "Using READONLY in linker script (GCC >= 11.0)")
-    else()
-        set(USE_READONLY "")
-        message(STATUS "Not using READONLY in linker script (GCC < 11.0)")
-    endif()
-
     # Генерируем .ld-файл из шаблона.
     message(STATUS "Генерация скрипта компоновщика из шаблона...")
     string(REGEX REPLACE "..$" "XX" MCU_TYPE_GENERIC "${MCU_TYPE}")
-    configure_file("${CMAKE_SOURCE_DIR}/STM32${MCU_TYPE_GENERIC}_FLASH.ld.in" "${CMAKE_BINARY_DIR}/STM32${MCU_TYPE}_FLASH.ld" @ONLY)
-    stm32_add_linker_script(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/STM32${MCU_TYPE}_FLASH.ld")
+    set(TEMPLATE_FILE_PATH "${CMAKE_SOURCE_DIR}/STM32${MCU_TYPE_GENERIC}_FLASH.ld.in")
+
+    if(EXISTS ${TEMPLATE_FILE_PATH})
+        message(STATUS "Найден локальный шаблон: ${TEMPLATE_FILE_PATH}")
+
+        # Размеры кучи и стека (можно переопределять через -D).
+        # Нормализуем значения размеров памяти в байты.
+        normalize_memory(heap_size)
+        normalize_memory(stack_size)
+
+        set(HEAP_SIZE ${heap_size} CACHE STRING "Required amount of heap")
+        set(STACK_SIZE ${stack_size} CACHE STRING "Required amount of stack")
+
+        # Проверяем версию GCC и задаём USE_READONLY.
+        if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
+            set(USE_READONLY "(READONLY)")
+            message(STATUS "Using READONLY in linker script (GCC >= 11.0)")
+        else()
+            set(USE_READONLY "")
+            message(STATUS "Not using READONLY in linker script (GCC < 11.0)")
+        endif()
+
+        set(LINKER_SCRIPT_PATH "${CMAKE_BINARY_DIR}/STM32${MCU_TYPE}_FLASH.ld")
+        configure_file(${TEMPLATE_FILE_PATH} ${LINKER_SCRIPT_PATH} @ONLY)
+    else()
+        message(STATUS "Локальный шаблон не найден. Будет использован стандартный скрипт компоновщика от stm32-cmake.")
+    endif()
 else()
     # Подключаем конфигурационный файл компоновщика.
     set(custom_script_path "${CMAKE_CURRENT_SOURCE_DIR}/${linker_script}")
@@ -328,6 +339,31 @@ else()
         message(FATAL_ERROR "Указанный скрипт компоновщика не найден: ${custom_script_path}")
     endif()
 endif()
+
+
+# 7. ФИНАЛЬНАЯ КОМПОНОВКА БИБЛИОТЕК.
+
+# Выбираем, какую "матрёшку" CMSIS подключать, на основе того,
+# нашли ли мы собственный скрипт компоновщика.
+if(LINKER_SCRIPT_PATH)
+    # Мы нашли свой скрипт (из шаблона или пользовательский).
+    set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_TYPE}")
+    message(STATUS "Подключение скрипта компоновщика: ${LINKER_SCRIPT_PATH}")
+    # Подключаем наш найденный скрипт
+    stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${LINKER_SCRIPT_PATH})
+else()
+    # Свой скрипт не найден, поэтому доверяем всё stm32-cmake.
+    string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
+    set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_MODEL}")
+    message(STATUS "Подключение встроенного скрипта компоновщика: ${CMAKE_CURRENT_BINARY_DIR}/${MCU_MODEL}.ld")
+endif()
+
+# Теперь подключаем все библиотеки одним вызовом.
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${CMSIS_TARGET_TO_LINK}
+    ${HAL_TARGETS}              # Сформированный список HAL-компонентов
+    ${link_libraries}           # Дополнительные библиотеки
+)
 
 # Генерируем артефакты сборки на основе списка из конфигурации.
 stm32_print_size_of_target(${PROJECT_NAME})

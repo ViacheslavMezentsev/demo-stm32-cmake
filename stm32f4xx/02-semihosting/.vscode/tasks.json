@@ -5,53 +5,32 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "targets": [ "all" ],
+      "targets": [ "${fileWorkspaceFolderBasename}" ],
       "problemMatcher": [],
       "group": "build"
     },
     {
-        "label": "start-qemu-session",
-        "type": "shell",
-        // Убедитесь, что команда указывает на ваш работающий qemu
-        //"command": "qemu-system-arm",
-        "command": "C:/Users/User/AppData/Roaming/GNU MCU Eclipse/QEMU/2.8.0-6-20190517-1329/bin/qemu-system-gnuarmeclipse.exe",
-        "args": [
-            // 1. Указываем точную модель платы из документации
-            "-board", "STM32F4-Discovery",
-
-            // 2. Явно указываем CPU (хотя плата выставит его по умолчанию, это для ясности)
-            //"-cpu", "cortex-m4",
-
-            // 3. Загружаем прошивку через опцию -image, как рекомендуется для МК
-            "-kernel", "${command:cmake.buildDirectory}/${command:cmake.buildTargetName}.elf",
-
-            // 4. Отключаем графический вывод
-            "-nographic",
-
-            // 5. Перенаправляем UART в TCP сокет для PuTTY
-            //"-serial", "tcp::4321,server,nowait",
-            "-semihosting-config", "enable=on,target=native",
-
-            // 6. Открываем GDB сервер и ждем подключения отладчика
-            "-s",
-            "-S"
-        ],
-        "isBackground": true,
-        "problemMatcher": {
-            "pattern": [
-                {
-                    "regexp": ".",
-                    "file": 1,
-                    "location": 2,
-                    "message": 3
-                }
-            ],
-            "background": {
-                "activeOnStart": true,
-                "beginsPattern": "^$",
-                "endsPattern": "^$"
-            }
-        }
+      "label": "Запустить qemu-arm",
+      "type": "process",
+      "command": "qemu-system-arm",
+      "args": [
+        "-M", "netduinoplus2",
+        "-cpu", "cortex-m4",
+        "-nographic",
+        "-gdb", "tcp::1234",
+        "-S",
+        "-kernel", "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
+        "-semihosting"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+          "pattern": [{ "regexp": ".", "file": 1, "location": 2, "message": 3 }],
+          "background": {
+              "activeOnStart": true,
+              "beginsPattern": "^.*",
+              "endsPattern": "^$"
+          }
+      }
     },
     // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
     {
