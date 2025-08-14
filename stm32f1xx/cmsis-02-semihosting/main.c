@@ -1,46 +1,66 @@
 // Минимальный код Си, использующий только заголовочный файл stm32f1xx.h.
 // Без стандартной библиотеки Си и startup кода.
 // Таблица векторов оформлена кодом на Си.
-#include <stm32f1xx.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
+#include <stm32f1xx.h>
+#include "xprintf.h"
+#include "main.h"
 
-/// \brief  Цикл, который выполняется до тех пор, пока указанный бит не станет установленным.
-/// \param  sfr  Регистровое поле, в котором проверяется бит.
-/// \param  bit  Бит, который проверяется.
-#define loop_until_bit_is_set( sfr, bit ) do { } while ( !READ_BIT( sfr, bit ) )
-
-/// \brief  Цикл, который выполняется до тех пор, пока указанный бит не станет сброшенным.
-/// \param  sfr  Регистровое поле, в котором проверяется бит.
-/// \param  bit  Бит, который проверяется.
-#define loop_until_bit_is_clear( sfr, bit ) do { } while ( READ_BIT( sfr, bit ) )
+/// Определяем макросы для использования xprintf и xputs.
+/// Эти макросы позволяют использовать printf и print как синонимы для xprintf и xputs соответственно.
+#ifdef XF_USE_OUTPUT
+#define printf xprintf
+#define print  xputs
+#endif
 
 /// Semihosting Initializing.
 extern void initialise_monitor_handles( void );
 
-/// Указатель стека, определённый в .ld файле.
-extern unsigned _estack;
-extern unsigned _sidata;    // начало секции .data в flash
-extern unsigned _sdata;     // начало секции .data в RAM
-extern unsigned _edata;     // окончание секции .data в RAM
-extern unsigned _sbss;      // начало секции .bss в RAM
-extern unsigned _ebss;      // окончание секции .bss в RAM
-
-__attribute__( ( used, naked ) ) void Reset_Handler( void );
-void delay( unsigned udelay );
-void SysTick_Handler( void );
-
-/// Тип элемента таблицы векторов прерываний.
-typedef void ( *const vector )( void );
-
 /// Таблица векторов прерываний.
-__attribute( ( used, section( ".isr_vector" ) ) ) const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] =
-{
-    ( void* ) &_estack,    // начальный указатель стека
-    [1] = Reset_Handler,
-    [15] = SysTick_Handler
-};
+__attribute( ( used, section( ".isr_vector" ) ) )
+const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] = { ( void* ) &_estack,    // начальный указатель стека
+    [1] = Reset_Handler, [15] = SysTick_Handler };
 
 volatile unsigned sys_tick_counter = 0;
+
+/**
+  * @brief  Returns first word of the unique device identifier (UID based on 96 bits)
+  * @retval Device identifier
+  */
+uint32_t HAL_GetUID( uint8_t w )
+{
+    return ( READ_REG( *( ( uint32_t* ) ( UID_BASE + ( 1 << w ) ) ) ) );
+}
+
+/**
+ * @brief Проверяет, исполняется ли код в эмуляторе QEMU.
+ * @return true, если это QEMU (UID равен нулю), иначе false.
+ */
+bool is_running_in_qemu( void )
+{
+    // HAL_GetUIDwX() читает 3 слова (96 бит) уникального ID из специальной
+    // области памяти. На реальном железе эти значения уникальны и не равны нулю.
+    // QEMU, как правило, возвращает для этой области нули.
+    if ( HAL_GetUID(0) == 0x00 && HAL_GetUID(1) == 0x00 && HAL_GetUID(2) == 0x00 )
+    {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * @brief Функция-адаптер для вывода одного символа через Semihosting.
+ *        Использует стандартную функцию putchar(), которая при линковке
+ *        с rdimon автоматически отправляет данные отладчику.
+ * @param c Символ для вывода.
+ */
+extern void semihosting_putchar( int c )
+{
+    putchar( c );
+}
 
 /***
  *  \brief  Обработчик прерывания SysTick.
@@ -59,18 +79,21 @@ void init( void )
     // Инициализация библиотеки semihosting.
     // Это необходимо для работы printf и других функций semihosting.
     initialise_monitor_handles();
+   
+    if ( !is_running_in_qemu() )
+    {
+        // Включить внешний кварцевый генератор HSE.
+        SET_BIT( RCC->CR, RCC_CR_HSEON );
 
-    // Включить внешний кварцевый генератор HSE.
-    SET_BIT( RCC->CR, RCC_CR_HSEON );
+        // Ждать, пока HSE не готов.
+        loop_until_bit_is_set( RCC->CR, RCC_CR_HSERDY );
 
-    // Ждать, пока HSE не готов.
-    loop_until_bit_is_set( RCC->CR, RCC_CR_HSERDY );
+        // Выбрать HSE как источник системного тактирования.
+        MODIFY_REG( RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_HSE );
 
-    // Выбрать HSE как источник системного тактирования.
-    MODIFY_REG( RCC->CFGR, RCC_CFGR_SW, RCC_CFGR_SW_HSE );
-
-    // Ждать, пока HSE не станет системным тактовым сигналом.
-    loop_until_bit_is_set( RCC->CFGR, RCC_CFGR_SWS_HSE );
+        // Ждать, пока HSE не станет системным тактовым сигналом.
+        loop_until_bit_is_set( RCC->CFGR, RCC_CFGR_SWS_HSE );
+    }
 
     // Обновление частоты системного тактового генератора.
     SystemCoreClockUpdate();
@@ -96,6 +119,18 @@ void init( void )
     WRITE_REG( SysTick->CTRL, SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk );
 }
 
+void print_host_time()
+{
+    time_t raw_time = time( NULL );
+
+    if ( raw_time != -1 )
+    {
+        struct tm* time_info = localtime( &raw_time );
+
+        // asctime добавляет \n в конце.
+        printf( "Host time is: %s", asctime( time_info ) );
+    }
+}
 
 /***
  *  \brief  Точка входа в пользовательский код.
@@ -104,6 +139,12 @@ int main()
 {
     // Инициализация SysTick.
     init();
+
+    // Говорим библиотеке xprintf, что для вывода каждого символа
+    // нужно вызывать нашу функцию semihosting_putchar.
+    xdev_out( semihosting_putchar );
+
+    print_host_time();
 
     while ( 1 )
     {
@@ -116,7 +157,7 @@ int main()
         // Считываем текущее состояние PC13 и выводим его в консоль.
         // Если светодиод включен, то выводим "On", иначе "Off".
         if ( READ_BIT( GPIOC->ODR, GPIO_ODR_ODR13 ) )
-        {            
+        {
             printf( "Led On\n" );
         }
         else
@@ -136,7 +177,7 @@ void delay( unsigned udelay )
     unsigned start = sys_tick_counter;
 
     // Ждать, пока не пройдет указанное количество миллисекунд
-    // sys_tick_counter увеличивается в SysTick_Handler каждую 1 мс    
+    // sys_tick_counter увеличивается в SysTick_Handler каждую 1 мс
     while ( ( sys_tick_counter - start ) < udelay )
     {
         // Ждать
