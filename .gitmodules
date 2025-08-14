@@ -12,4 +12,4 @@
 	url = https://github.com/mysterywolf/Qfplib-M0-tiny
 [submodule "modules/modm"]
 	path = modules/modm
-	url = https://github.com/modm-io/modm
+	url = https://github.com/modm-io/modm.git

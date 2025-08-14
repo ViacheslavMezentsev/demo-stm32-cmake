@@ -5,7 +5,8 @@
 #include "main.h"
 
 /// Таблица векторов прерываний.
-__attribute( ( used, section( ".isr_vector" ) ) ) const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] =
+__attribute( ( used, section( ".isr_vector" ) ) )
+const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] =
 {
     ( void* ) &_estack,    // начальный указатель стека
     [1] = Reset_Handler,
@@ -15,12 +16,10 @@ __attribute( ( used, section( ".isr_vector" ) ) ) const vector isr_handlers[2 - 
 volatile unsigned sys_tick_counter = 0;
 
 // Переменные для проверки инициализации секций .data и .bss.
-// Инициализированная переменная до инициализации будет иметь произвольное значение,
-// после инициализации будет иметь значение 0x12345678.
-// Неинициализированная переменная до инициализации может иметь значение 0xFFFFFFFF,
-// после инициализации будет иметь значение 0 (нулевое).
-int init_data_check = 0x12345678;   // Инициализированная переменная в .data
-int uninit_data_check;              // Неинициализированная переменная в .bss
+// Инициализированная переменная после инициализации будет иметь значение 0x12345678.
+// Неинициализированная переменная после инициализации будет иметь значение 0 (нулевое).
+int init_data_check = 0x12345678;    // Инициализированная переменная в .data
+int uninit_data_check;               // Неинициализированная переменная в .bss
 
 
 /***
@@ -32,7 +31,7 @@ void SysTick_Handler()
 }
 
 
-/*** 
+/***
  *  \brief  Инициализация SysTick для генерации прерывания каждую 1 мс.
  */
 void init( void )
@@ -60,7 +59,7 @@ void init( void )
     MODIFY_REG( GPIOC->CRH, GPIO_CRH_MODE13_Msk | GPIO_CRH_CNF13_Msk,
         ( 0x2U << GPIO_CRH_MODE13_Pos ) | ( 0x0U << GPIO_CRH_CNF13_Pos ) );
 
-#if defined (__Vendor_SysTickConfig) && (__Vendor_SysTickConfig == 0U)
+#if defined( __Vendor_SysTickConfig ) && ( __Vendor_SysTickConfig == 0U )
     SysTick_Config( SystemCoreClock / 1000U );
 #else
     // Отключить SysTick перед настройкой.
@@ -109,8 +108,8 @@ void delay( unsigned udelay )
     unsigned start = sys_tick_counter;
 
     // Ждать, пока не пройдет указанное количество миллисекунд
-    // sys_tick_counter увеличивается в SysTick_Handler каждую 1 мс    
-    while ( ( sys_tick_counter - start ) < udelay )
+    // sys_tick_counter увеличивается в SysTick_Handler каждую 1 мс
+    while ( sys_tick_counter - udelay < start )
     {
     }
 }
@@ -128,7 +127,7 @@ void Reset_Handler()
     unsigned* src = &_sidata;
     unsigned* dst = &_sdata;
 
-    while ( dst < &_edata )
+    while ( ( uintptr_t ) dst < ( uintptr_t ) &_edata )
     {
         *dst++ = *src++;
     }
@@ -136,7 +135,7 @@ void Reset_Handler()
     // Обнуление .bss (секция для неинициализированных глобальных переменных).
     dst = &_sbss;
 
-    while ( dst < &_ebss )
+    while ( ( uintptr_t ) dst < ( uintptr_t ) &_ebss )
     {
         *dst++ = 0;
     }

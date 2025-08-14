@@ -26,5 +26,13 @@
     //"toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current",
     "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1",
     "cortex-debug.variableUseNaturalFormat": false,
+    "files.associations": {
+        "Makefile": "makefile",
+        "*.inc": "plaintext",
+        "stm32f1xx.h": "c",
+        "stm32f103xb.h": "c",
+        "system_stm32f1xx.h": "c",
+        "main.h": "c"
+    },
     //"toolchain": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
 }
