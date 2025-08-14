@@ -36,6 +36,8 @@ extern "C" {
 /* Exported variables --------------------------------------------------------*/
 /* Exported defines ----------------------------------------------------------*/
 extern TIM_HandleTypeDef htim3;
+extern void MX_TIM3_Init(void);
+
 #define BSP_IP_TIM_Handle htim3
 #define BSP_IP_TIM_Init MX_TIM3_Init
 

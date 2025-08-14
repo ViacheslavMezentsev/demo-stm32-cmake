@@ -1,5 +1,9 @@
 ﻿cmake_minimum_required(VERSION 3.19)
 
+set(MEMS1_VERSION "9.6.0")
+set(STM32_CUBE_PACKS_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/Packs/STMicroelectronics")
+set(STM32_XCUBE_MEMS1_PATH  "${STM32_CUBE_PACKS_PATH}/X-CUBE-MEMS1/${MEMS1_VERSION}")
+
 target_include_directories(${PROJECT_NAME} PUBLIC App Target
     "../FlashStorage_STM32"
     "${STM32_XCUBE_MEMS1_PATH}/Drivers/BSP/Components/Common"
@@ -41,5 +45,5 @@ target_sources(${PROJECT_NAME} PRIVATE
     "${STM32_XCUBE_MEMS1_PATH}/Drivers/BSP/IKS01A2/iks01a2_motion_sensors_ex.c"
 )
 
-target_link_libraries(${PROJECT_NAME} "${STM32_XCUBE_MEMS1_PATH}/Middlewares/ST/STM32_MotionFX_Library/Lib/MotionFX_CM4F_wc32_ot_hard.a")
-target_link_libraries(${PROJECT_NAME} "${STM32_XCUBE_MEMS1_PATH}/Middlewares/ST/STM32_MotionMC_Library/Lib/MotionMC_CM4F_wc32_ot_hard.a")
+target_link_libraries(${PROJECT_NAME} PRIVATE "${STM32_XCUBE_MEMS1_PATH}/Middlewares/ST/STM32_MotionFX_Library/Lib/MotionFX_CM4F_wc32_ot_hard.a")
+target_link_libraries(${PROJECT_NAME} PRIVATE "${STM32_XCUBE_MEMS1_PATH}/Middlewares/ST/STM32_MotionMC_Library/Lib/MotionMC_CM4F_wc32_ot_hard.a")

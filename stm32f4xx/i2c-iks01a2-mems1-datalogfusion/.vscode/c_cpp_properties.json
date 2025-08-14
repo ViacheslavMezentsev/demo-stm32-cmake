@@ -6,7 +6,7 @@
             "${workspaceFolder}/Core/Inc"
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F4xx", "STM32F401xE" ],
-        "compiler": "${config:toolchain}/bin/arm-none-eabi-gcc.exe"
+        "compiler": ""
     },
     "configurations": [
         {

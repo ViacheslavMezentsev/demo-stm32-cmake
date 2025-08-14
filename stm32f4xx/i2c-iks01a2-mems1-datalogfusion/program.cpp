@@ -22,6 +22,8 @@
 extern USART_HandleTypeDef husart1;
 extern CRC_HandleTypeDef hcrc;
 
+extern "C" void MotionMC_manager_MagCal_start(int sampletime);
+
 // Переменная для хранения данных с кнопок (бит соответствует нажатой клавише)
 uint8_t keyPressed = 0;
 uint8_t keyPressedlast = 0;

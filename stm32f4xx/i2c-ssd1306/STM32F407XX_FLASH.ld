@@ -22,7 +22,7 @@
 *****************************************************************************
 ** @attention
 **
-** <h2><center>&copy; COPYRIGHT(c) 2019 STMicroelectronics</center></h2>
+** <h2><center>&copy; COPYRIGHT(c) 2025 STMicroelectronics</center></h2>
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
@@ -55,7 +55,7 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x0;      /* required amount of heap  */
+_Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
 /* Specify the memory areas */
@@ -103,53 +103,53 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
-  .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
-  .ARM : {
+  .ARM.extab (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
+  {
+    . = ALIGN(4);
+    *(.ARM.extab* .gnu.linkonce.armextab.*)
+    . = ALIGN(4);
+  } >FLASH
+
+  .ARM (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
+  {
+    . = ALIGN(4);
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
+    . = ALIGN(4);
   } >FLASH
 
-  .preinit_array     :
+  .preinit_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
+    . = ALIGN(4);
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
+    . = ALIGN(4);
   } >FLASH
-  .init_array :
+
+  .init_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
+    . = ALIGN(4);
     PROVIDE_HIDDEN (__init_array_start = .);
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
+    . = ALIGN(4);
   } >FLASH
-  .fini_array :
+
+  .fini_array (READONLY) : /* The "READONLY" keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
+    . = ALIGN(4);
     PROVIDE_HIDDEN (__fini_array_start = .);
     KEEP (*(SORT(.fini_array.*)))
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
+    . = ALIGN(4);
   } >FLASH
 
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
-
-  /* Uninitialized data section */
-  . = ALIGN(4);
-  .bss :
-  {
-    /* This is used by the startup in order to initialize the .bss secion */
-    _sbss = .;         /* define a global symbol at bss start */
-    __bss_start__ = _sbss;
-    *SEGGER_RTT.o(.bss*)
-    *(.bss)
-    *(.bss*)
-    *(COMMON)
-
-    . = ALIGN(4);
-    _ebss = .;         /* define a global symbol at bss end */
-    __bss_end__ = _ebss;
-  } >RAM
 
   /* Initialized data sections goes into RAM, load LMA copy after code */
   .data :
@@ -158,6 +158,8 @@ SECTIONS
     _sdata = .;        /* create a global symbol at data start */
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
+    *(.RamFunc)        /* .RamFunc sections */
+    *(.RamFunc*)       /* .RamFunc* sections */
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
@@ -182,6 +184,23 @@ SECTIONS
     _eccmram = .;       /* create a global symbol at ccmram end */
   } >CCMRAM AT> FLASH
 
+
+  /* Uninitialized data section */
+  . = ALIGN(4);
+  .bss :
+  {
+    /* This is used by the startup in order to initialize the .bss secion */
+    _sbss = .;         /* define a global symbol at bss start */
+    __bss_start__ = _sbss;
+    *(.bss)
+    *(.bss*)
+    *(COMMON)
+
+    . = ALIGN(4);
+    _ebss = .;         /* define a global symbol at bss end */
+    __bss_end__ = _ebss;
+  } >RAM
+
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
   {
@@ -203,7 +222,6 @@ SECTIONS
     libgcc.a ( * )
   }
 
-  .ARM.attributes 0 : { *(.ARM.attributes) }
 }
 
 

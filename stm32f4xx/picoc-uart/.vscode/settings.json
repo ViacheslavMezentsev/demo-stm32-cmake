@@ -19,9 +19,9 @@
     "cortex-debug.openocdPath.linux": "openocd",
     // Настройки проекта.
     "executable": "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
-    "device": "STM32F103C8",
-    "svdFile" : "${workspaceRoot}/STM32F103xx.svd",
-    "targetFamily": "stm32f1x",
+    "device": "STM32F411CE",
+    "svdFile" : "${workspaceRoot}/STM32F411xx.svd",
+    "targetFamily": "stm32f4x",
     //"jlink-id": "nucleo-f030", //-usb ${config:jlink-id}
     //"toolchain": "${env:USERPROFILE}/scoop/apps/gcc-arm-none-eabi/current"
     "toolchain": "${env:USERPROFILE}/xpack-arm-none-eabi-gcc-13.3.1-1.1",
