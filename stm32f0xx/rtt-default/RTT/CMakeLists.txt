@@ -4,7 +4,10 @@ add_library(RTT OBJECT)
 
 add_library(RTT::RTT ALIAS RTT)
 
-target_include_directories(RTT PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/RTT/RTT)
+target_include_directories(RTT PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/RTT/RTT
+)
 
 target_sources(RTT PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../modules/RTT/Syscalls/SEGGER_RTT_Syscalls_GCC.c

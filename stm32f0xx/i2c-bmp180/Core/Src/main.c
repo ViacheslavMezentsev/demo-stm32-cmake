@@ -66,8 +66,9 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
-  // �?нициализация библиотеки Semihosting.
+  // �?нициализация библиотеки Semihosting.
   initialise_monitor_handles();
   /* USER CODE END 1 */
 
