@@ -53,6 +53,7 @@ endif()
 # Устанавливаем значения по умолчанию для пропущенных параметров.
 ensure_default_value(linker_script "auto")
 ensure_default_value(use_newlib_nano "false")
+ensure_default_value(mcu_core "")
 
 # Определяем языки проекта.
 # Если в конфиге не указано, используем C, CXX, ASM по умолчанию.
@@ -115,12 +116,20 @@ foreach(src_item IN LISTS sources)
     # и НЕ добавляем его в список для прямой компиляции.
     if(use_hal_components)
         if(filename_lower STREQUAL SYSTEM_FILENAME_TARGET)
-            set(CMSIS_${MCU_FAMILY}_SYSTEM ${full_path})
+            if(mcu_core)
+                set(CMSIS_${MCU_FAMILY}_${mcu_core}_SYSTEM ${full_path})
+            else()
+                set(CMSIS_${MCU_FAMILY}_SYSTEM ${full_path})
+            endif()
             message(STATUS "Обнаружен пользовательский system-файл. Переопределение: ${full_path}")
             set(is_special_file TRUE)
 
         elseif(filename_lower MATCHES ${STARTUP_FILENAME_PATTERN})
-            set(CMSIS_${MCU_FAMILY}_${MCU_TYPE}_STARTUP ${full_path})
+            if(mcu_core)
+                set(CMSIS_${MCU_FAMILY}_${mcu_core}_${MCU_TYPE}_STARTUP ${full_path})
+            else()
+                set(CMSIS_${MCU_FAMILY}_${MCU_TYPE}_STARTUP ${full_path})
+            endif()
             message(STATUS "Обнаружен пользовательский startup-файл. Переопределение: ${full_path}")
             set(is_special_file TRUE)
         endif()
@@ -210,16 +219,31 @@ if(use_hal_components)
     #set(CMSIS_${MCU_FAMILY}_SYSTEM                 "${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32f4xx.c")
     #set(CMSIS_${MCU_FAMILY}_${MCU_TYPE}_STARTUP    "${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f407xx.s")
 
-    find_package(CMSIS COMPONENTS ${MCU} REQUIRED)
-    find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
+    if(mcu_core)
+        find_package(CMSIS COMPONENTS STM32${MCU_FAMILY}_${mcu_core} REQUIRED)
+    else()
+        find_package(CMSIS COMPONENTS STM32${MCU_FAMILY} REQUIRED)
+    endif()    
 
     # Автоматически добавляем USE_HAL_DRIVER, если в конфиге указан хотя бы один HAL-компонент.
     # Команда if() для списка считается истинной, если список не пуст.
     if(hal_components)
         #message(STATUS "Обнаружены компоненты HAL/LL. Автоматически добавляется определение: USE_HAL_DRIVER")
+
+        if(mcu_core)
+            find_package(HAL COMPONENTS STM32${MCU_FAMILY}_${mcu_core} REQUIRED)
+        else()
+            find_package(HAL COMPONENTS STM32${MCU_FAMILY} REQUIRED)
+        endif()
+
+        set(HAL_TARGET_PREFIX "HAL::STM32::${MCU_FAMILY}")
+        if(mcu_core)
+            set(HAL_TARGET_PREFIX "${HAL_TARGET_PREFIX}::${mcu_core}")
+        endif()
+
         # Подключаем необходимые библиотеки на основе конфига.
         # Сначала создаем список целевых HAL-библиотек, добавляя префикс к каждому элементу.
-        list(TRANSFORM hal_components PREPEND "HAL::STM32::${MCU_FAMILY}::" OUTPUT_VARIABLE HAL_TARGETS)
+        list(TRANSFORM hal_components PREPEND "${HAL_TARGET_PREFIX}::" OUTPUT_VARIABLE HAL_TARGETS)
 
         target_compile_definitions(${PROJECT_NAME} PRIVATE USE_HAL_DRIVER)
 
@@ -264,12 +288,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${include_directories}
 )
 
-# Добавляем определения компилятора из конфига + обязательные.
-# Примечание: STM32${MCU_TYPE} генерируется CMake, его лучше оставить здесь для надежности.
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    ${compile_definitions}
-    STM32${MCU_TYPE}
-)
+# Добавляем определения компилятора из конфига.
+target_compile_definitions(${PROJECT_NAME} PRIVATE ${compile_definitions})
 
 target_compile_options(${PROJECT_NAME} PRIVATE
 #    $<$<CONFIG:DEBUG>:-Og -gdwarf-2 -gstrict-dwarf>    # для симуляции в Proteus
@@ -347,14 +367,28 @@ endif()
 # нашли ли мы собственный скрипт компоновщика.
 if(LINKER_SCRIPT_PATH)
     # Мы нашли свой скрипт (из шаблона или пользовательский).
-    set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_TYPE}")
+    # Для многоядерных систем нужно явно указать ядро
+    if(use_hal_components)
+        if(mcu_core)
+            set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_TYPE}::${mcu_core}")
+        else()
+            set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_TYPE}")
+        endif()
+    endif()
     message(STATUS "Подключение скрипта компоновщика: ${LINKER_SCRIPT_PATH}")
     # Подключаем наш найденный скрипт
     stm32_add_linker_script(${PROJECT_NAME} PRIVATE ${LINKER_SCRIPT_PATH})
 else()
     # Свой скрипт не найден, поэтому доверяем всё stm32-cmake.
     string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
-    set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_MODEL}")
+    # Для многоядерных систем нужно явно указать ядро
+    if(use_hal_components)
+        if(mcu_core)
+            set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_MODEL}::${mcu_core}")
+        else()
+            set(CMSIS_TARGET_TO_LINK "CMSIS::STM32::${MCU_MODEL}")
+        endif()
+    endif()
     message(STATUS "Подключение встроенного скрипта компоновщика: ${CMAKE_CURRENT_BINARY_DIR}/${MCU_MODEL}.ld")
 endif()
 
