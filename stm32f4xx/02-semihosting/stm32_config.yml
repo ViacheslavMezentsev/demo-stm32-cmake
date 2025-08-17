@@ -31,7 +31,7 @@ stm32_cmake_yml_version_check: false
 #project_name: "auto"
 
 # Точное наименование MCU. Обязательно, если не используется ioc_file.
-mcu: "STM32F401CCU6"
+mcu: "STM32F407VGT"
 
 # (Опционально) Ядро для многоядерных MCU.
 # Укажите 'M7' или 'M4' для STM32H7, или 'M4' для STM32WB и т.д.
@@ -56,8 +56,8 @@ sources:
 #  - "Core"        # Код, сгенерированный CubeMX (main.c, stm32h7xx_it.c, etc.)
 #  - "User"
 #  - "Core/Src/system_stm32f4xx.c"
-  - "startup_stm32f401xc.s"
-  - "syscalls.c"
+#  - "startup_stm32f407xx.s"
+#  - "syscalls.c"
   - "main.cpp"
 
 # (Опционально) Дополнительные пути к папкам с заголовочными файлами.
@@ -90,11 +90,7 @@ include_directories:
 # Список компонентов HAL/LL для подключения.
 # USE_HAL_DRIVER добавляется, если список не пуст.
 # USE_FULL_LL_DRIVER добавляется, если есть элемент с префиксом "LL_".
-hal_components:
-  - "CORTEX"
-#  - "RCC"
-#  - "DMAEx"
-  - "GPIO"
+hal_components: [ "CORTEX", "FLASH", "RCC", "GPIO" ]
 
 
 # ==============================================================================
@@ -170,7 +166,7 @@ compile_options:
 # (Опционально) Прямые директивы для компоновщика (например, "--gc-sections").
 linker_directives:
   - "--print-memory-usage"
-#  - "--no-warn-rwx-segments"
+  - "--no-warn-rwx-segments"
 
 # (Опционально) Скрипт компоновщика.
 # "auto" (по умолчанию): генерация из шаблона. В этом режиме работают heap/stack.
@@ -204,7 +200,7 @@ use_newlib_nano: true
 # "NoSys": системные вызовы (syscalls) реализованы через libnosys
 # "Semihosting": системные вызовы (syscalls) реализованы через librdimon
 # При отсутствии параметра вы должны подключить свою реализацию syscalls.
-system_library: "NoSys"
+system_library: "Semihosting"
 
 # Список желаемых артефактов сборки.
 build_artifacts: [ "bin", "hex", "map", "lss" ]

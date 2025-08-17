@@ -5,12 +5,28 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "targets": [
-        "all"
-      ],
+      "targets": [ "${fileWorkspaceFolderBasename}" ],
       "problemMatcher": [],
       "group": "build"
     },
+    {
+      "label": "Запустить qemu-arm",
+      "type": "shell",
+      "command": "qemu-system-arm",
+      "args": [
+        "-M", "${input:qemuMachine}",
+        "-nographic", "-gdb", "tcp::1234", "-S",        
+        "-kernel", "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
+        "-semihosting"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [ { "regexp": ".", "file": 1, "location": 2, "message": 3 } ],
+        "background": { "activeOnStart": true, "beginsPattern": "^.*", "endsPattern": "^$"
+        }
+      }
+    },
+    // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
     {
       "label": "Сбросить (j-link)",
       "type": "shell",
@@ -19,9 +35,7 @@
         "/C",
         "((echo device ${config:device} & echo si SWD & echo speed 4000 & echo r & echo h & echo q) > flash.jlink) && (JLink.exe -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Сброс мк (j-link)."
     },
@@ -33,9 +47,7 @@
         "/C",
         "((echo r & echo h & echo erase & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Полная очистка мк (j-link)."
     },
@@ -47,9 +59,7 @@
         "/C",
         "((echo r & echo h & echo loadfile ${command:cmake.buildType}/${workspaceFolderBasename}.hex & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Прошивка мк (j-link)."
     },
@@ -61,9 +71,7 @@
         "/C",
         "((echo h & echo r & echo п & echo q) > flash.jlink) && (JLink.exe -device ${config:device} -if swd -speed 4000 -nogui 1 -usb ${config:jlink-id} -CommandFile flash.jlink) 1> nul && echo \"Успешно\" || echo \"Ошибка\""
       ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Выполняет команду go (j-link)."
     },
@@ -71,13 +79,8 @@
       "label": "Сброс (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "pyocd reset -t ${config:device} -m sw"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "pyocd reset -t ${config:device} -m sw" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Сброс мк (pyocd)."
     },
@@ -85,13 +88,8 @@
       "label": "Очистить всё (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "pyocd erase -t ${config:device} --mass"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "pyocd erase -t ${config:device} --mass"],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Полная очистка мк (pyocd)."
     },
@@ -99,13 +97,8 @@
       "label": "Прошить (pyocd)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "pyocd flash -t ${config:device} ${command:cmake.buildType}/${workspaceFolderBasename}.hex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "pyocd flash -t ${config:device} ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Прошивка мк (pyocd)."
     },
@@ -113,13 +106,8 @@
       "label": "Сброс (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "st-flash reset"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "st-flash reset" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Сброс мк (st-flash)."
     },
@@ -127,13 +115,8 @@
       "label": "Очистить всё (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "st-flash erase"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "st-flash erase"],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Полная очистка мк (st-flash)."
     },
@@ -141,26 +124,22 @@
       "label": "Прошить (st-flash)",
       "type": "shell",
       "command": "cmd",
-      "args": [
-        "/C",
-        "st-flash --reset --format \"ihex\" --freq=4000k write ${command:cmake.buildType}/${workspaceFolderBasename}.hex"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/build"
-      },
+      "args": [ "/C", "st-flash --reset --format \"ihex\" --freq=4000k write ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Прошивка мк (st-flash)."
-    },
+    }
+  ],
+  "inputs": [
     {
-      "type": "cmake",
-      "label": "CMake: очистка перестроения",
-      "command": "cleanRebuild",
-      "targets": [
-        "all"
+      "id": "qemuMachine",
+      "type": "pickString",
+      "description": "Выберите машину для эмуляции в QEMU",
+      "options": [
+        { "label": "Netduino 2 (STM32F205RF, Cortex-M3)", "value": "netduino2" },
+        { "label": "Netduino Plus 2 (STM32F405RG, Cortex-M4)", "value": "netduinoplus2" }
       ],
-      "group": "build",
-      "problemMatcher": [],
-      "detail": "Задача шаблона CMake очистка перестроения"
+      "default": "netduino2"
     }
   ]
 }

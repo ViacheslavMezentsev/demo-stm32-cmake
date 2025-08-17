@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include <stm32f4xx_hal.h>
 #include <core_cm4.h>
 #include "version.h"
@@ -9,20 +10,6 @@
  */
 #define SCB_CPUID_ADDR ( 0xE000ED00UL )
 #define SCB_CPUID      ( *( ( volatile const uint32_t* ) SCB_CPUID_ADDR ) )
-
-/**
-  * @brief  Код производителя ядра ARM Ltd.
-  */
-#define ARM_IMPLEMENTER_CODE (0x41UL)
-
-/**
-  * @brief  Проверяет, исполняется ли код в эмуляторе QEMU, по регистру CPUID.
-  * @note   Этот макрос не зависит от HAL и является самым надежным способом
-  *         определения QEMU во время выполнения.
-  * @retval 1 если производитель ядра - не ARM (вероятно, QEMU), 0 в противном случае.
-  */
-#define IS_RUNNING_IN_QEMU() ( ((SCB_CPUID >> 24) & 0xFFUL) != ARM_IMPLEMENTER_CODE )
-
 
 /// Semihosting Initializing.
 extern "C" void initialise_monitor_handles( void );
@@ -188,6 +175,19 @@ void print_firmware_info( void )
     printf( "--------------------------------------------------\n" );
 }
 
+void print_host_time()
+{
+    time_t raw_time = time( NULL );
+
+    if ( raw_time != -1 )
+    {
+        struct tm* time_info = localtime( &raw_time );
+
+        // asctime добавляет \n в конце.
+        printf( "Host time is: %s", asctime( time_info ) );
+    }
+}
+
 /**
  * \brief   Точка входа в программу.
  *
@@ -203,6 +203,8 @@ int main()
     print_firmware_info();
 
     print_cpu_id();
+
+    print_host_time();
 
     while ( 1 )
     {
