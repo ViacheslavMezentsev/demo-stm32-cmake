@@ -13,3 +13,6 @@
 [submodule "modules/modm"]
 	path = modules/modm
 	url = https://github.com/modm-io/modm.git
+[submodule "modules/stm32-cmake-yml"]
+	path = modules/stm32-cmake-yml
+	url = https://github.com/ViacheslavMezentsev/stm32-cmake-yml
