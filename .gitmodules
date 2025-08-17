@@ -16,3 +16,6 @@
 [submodule "modules/stm32-cmake-yml"]
 	path = modules/stm32-cmake-yml
 	url = https://github.com/ViacheslavMezentsev/stm32-cmake-yml
+[submodule "modules/Zhele"]
+	path = modules/Zhele
+	url = https://github.com/azhel12/Zhele.git
