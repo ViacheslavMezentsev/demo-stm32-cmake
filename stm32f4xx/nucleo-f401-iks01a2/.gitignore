@@ -1,0 +1,6 @@
+/build
+/Project Backups
+.cortex-debug*
+BROWSE.*
+.mxproject
+*.User.workspace
