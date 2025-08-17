@@ -45,7 +45,7 @@
       "type" : "cortex-debug",
       "servertype" : "openocd",
       "device" : "${config:device}",
-      //"serialNumber": "${config:jlink-id}",
+      "serialNumber": "${config:jlink-id}",
       "preLaunchTask" : "CMake: build",
       "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
       "runToEntryPoint" : "main",
@@ -86,7 +86,7 @@
       "runToEntryPoint" : "main",
       //"showDevDebugOutput" : "raw",
       "svdFile" : "${config:svdFile}",
-      "liveWatch": { "enabled": true, "samplesPerSecond": 2 },
+      "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
     },
     {
       "name" : "Debug (gdb/jlink)",
@@ -97,13 +97,13 @@
       "type" : "cortex-debug",
       "servertype" : "jlink",
       "device" : "${config:device}",
-      //"serialNumber": "${config:jlink-id}",
+      "serialNumber": "${config:jlink-id}",
       "preLaunchTask" : "CMake: build",
       "preRestartCommands" : [ "load", "enable breakpoint", "monitor reset" ],
       "runToEntryPoint" : "main",
       //"showDevDebugOutput" : "raw",
       "svdFile" : "${config:svdFile}",
-      "liveWatch": { "enabled": true, "samplesPerSecond": 2 },
+      "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
       "rttConfig": { "enabled": false, "address": "auto", "decoders": [ { "label": "RTT channel 0", "port": 0, "timestamp": true, "type": "console" } ] }
     },
     {

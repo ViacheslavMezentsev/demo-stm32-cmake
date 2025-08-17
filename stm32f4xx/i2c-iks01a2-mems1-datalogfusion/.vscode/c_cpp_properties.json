@@ -2,8 +2,7 @@
     "env": {
         "defaultIncludePath": [
             "${config:toolchain}/arm-none-eabi/include",
-            "${config:toolchain}/arm-none-eabi/include/c++/**",
-            "${workspaceFolder}/Core/Inc"
+            "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
         "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F4xx", "STM32F401xE" ],
         "compiler": ""
@@ -17,8 +16,8 @@
             "compilerPath": "${compiler}",
             "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
-            "cStandard": "gnu11",
-            "cppStandard": "gnu++14",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
@@ -32,8 +31,8 @@
             "compilerPath": "${compiler}",
             "compileCommands": "${workspaceFolder}/build/Release/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
-            "cStandard": "gnu11",
-            "cppStandard": "gnu++14",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": "${workspaceFolder}/.vscode/browse.vc.db"
