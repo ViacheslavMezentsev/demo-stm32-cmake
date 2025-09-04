@@ -1,25 +1,4 @@
-#include <stm32f1xx_hal.h>
-#include "xprintf.h"
-
-/// Определяем макросы для использования xprintf и xputs.
-/// Эти макросы позволяют использовать printf и print как синонимы для xprintf и xputs соответственно.
-#ifdef XF_USE_OUTPUT
-#define printf      xprintf
-#define print       xputs
-#endif
-
-extern UART_HandleTypeDef huart1;
-
-/// Инициализация USART1.
-/// @note    Настройка USART1 производится в файле usart.cpp.
-extern void MX_USART1_UART_Init( void );
-
-/// @brief  Функция для передачи одного символа по последовательному порту.
-extern "C" void uart_putc( int c );
-
-/// Пин светодиода (STM32F103C8T6).
-#define LED_USER_Pin       GPIO_PIN_13
-#define LED_USER_GPIO_Port GPIOC
+#include "main.h"
 
 const char Text1[] = "Привет из STM32! (def)\n";
 
@@ -72,8 +51,30 @@ int main()
     // Устанавливаем функцию вывода.
     xdev_out( uart_putc );
 
-    // Вывод значения частоты HCLK в UART.
-    printf( "HCLK Frequency: %lu Hz\n", HAL_RCC_GetHCLKFreq() );
+    println( "\n--- System Clock Information (using HAL) ---" );
+
+    print( "Target CPU Frequency (HSE_VALUE): " );
+    printf( "%lu", HSE_VALUE / 1000000 );
+    println( " MHz" );
+
+    // Получаем "реальные" текущие частоты из регистров контроллера с помощью HAL-функций.
+    print( "Actual SYSCLK Frequency:      " );
+    printf( "%lu", HAL_RCC_GetSysClockFreq() / 1000000 );
+    println( " MHz" );
+
+    print( "HCLK (Core, AHB) Frequency:   " );
+    printf( "%lu", HAL_RCC_GetHCLKFreq() / 1000000 );
+    println( " MHz" );
+
+    print( "PCLK1 (APB1) Frequency:       " );
+    printf( "%lu", HAL_RCC_GetPCLK1Freq() / 1000000 );
+    println( " MHz  <-- UART2, UART3 are here" );
+
+    print( "PCLK2 (APB2) Frequency:       " );
+    printf( "%lu", HAL_RCC_GetPCLK2Freq() / 1000000 );
+    println( " MHz  <-- UART1 is here" );
+
+    println( "------------------------------------------" );
 
     while ( 1 )
     {
