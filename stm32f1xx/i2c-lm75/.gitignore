@@ -5,3 +5,5 @@
 BROWSE.*
 .mxproject
 *.User.workspace
+Makefile
+STM32*.ld

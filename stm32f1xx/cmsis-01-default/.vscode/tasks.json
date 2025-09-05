@@ -11,25 +11,19 @@
     },
     {
       "label": "Запустить qemu-arm",
-      "type": "process",
+      "type": "shell",
       "command": "qemu-system-arm",
       "args": [
-        "-M", "netduino2",
-        "-cpu", "cortex-m3",
-        "-nographic",
-        "-gdb", "tcp::1234",
-        "-S",
+        "-M", "${input:qemuMachine}",
+        "-nographic", "-gdb", "tcp::1234", "-S",        
         "-kernel", "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
         "-semihosting"
       ],
       "isBackground": true,
       "problemMatcher": {
-          "pattern": [{ "regexp": ".", "file": 1, "location": 2, "message": 3 }],
-          "background": {
-              "activeOnStart": true,
-              "beginsPattern": "^.*",
-              "endsPattern": "^$"
-          }
+        "pattern": [ { "regexp": ".", "file": 1, "location": 2, "message": 3 } ],
+        "background": { "activeOnStart": true, "beginsPattern": "^.*", "endsPattern": "^$"
+        }
       }
     },
     // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
@@ -134,6 +128,18 @@
       "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Прошивка мк (st-flash)."
+    }
+  ],
+  "inputs": [
+    {
+      "id": "qemuMachine",
+      "type": "pickString",
+      "description": "Выберите машину для эмуляции в QEMU",
+      "options": [
+        { "label": "Netduino 2 (STM32F205RF, Cortex-M3)", "value": "netduino2" },
+        { "label": "Netduino Plus 2 (STM32F405RG, Cortex-M4)", "value": "netduinoplus2" }
+      ],
+      "default": "netduino2"
     }
   ]
 }

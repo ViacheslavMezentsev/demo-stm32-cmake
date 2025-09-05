@@ -5,9 +5,26 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "targets": [ "all" ],
+      "targets": [ "${fileWorkspaceFolderBasename}" ],
       "problemMatcher": [],
       "group": "build"
+    },
+    {
+      "label": "Запустить qemu-arm",
+      "type": "shell",
+      "command": "qemu-system-arm",
+      "args": [
+        "-M", "${input:qemuMachine}",
+        "-nographic", "-gdb", "tcp::1234", "-S",        
+        "-kernel", "${command:cmake.buildDirectory}/${workspaceFolderBasename}.elf",
+        "-semihosting"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [ { "regexp": ".", "file": 1, "location": 2, "message": 3 } ],
+        "background": { "activeOnStart": true, "beginsPattern": "^.*", "endsPattern": "^$"
+        }
+      }
     },
     // Command line options: https://wiki.segger.com/J-Link_Commander#Batch_processing
     {
@@ -84,6 +101,45 @@
       "options": { "cwd": "${workspaceFolder}/build" },
       "group": "build",
       "detail": "Прошивка мк (pyocd)."
+    },
+    {
+      "label": "Сброс (st-flash)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "st-flash reset" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Сброс мк (st-flash)."
+    },
+    {
+      "label": "Очистить всё (st-flash)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "st-flash erase"],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Полная очистка мк (st-flash)."
+    },
+    {
+      "label": "Прошить (st-flash)",
+      "type": "shell",
+      "command": "cmd",
+      "args": [ "/C", "st-flash --reset --format \"ihex\" --freq=4000k write ${command:cmake.buildType}/${workspaceFolderBasename}.hex" ],
+      "options": { "cwd": "${workspaceFolder}/build" },
+      "group": "build",
+      "detail": "Прошивка мк (st-flash)."
+    }
+  ],
+  "inputs": [
+    {
+      "id": "qemuMachine",
+      "type": "pickString",
+      "description": "Выберите машину для эмуляции в QEMU",
+      "options": [
+        { "label": "Netduino 2 (STM32F205RF, Cortex-M3)", "value": "netduino2" },
+        { "label": "Netduino Plus 2 (STM32F405RG, Cortex-M4)", "value": "netduinoplus2" }
+      ],
+      "default": "netduino2"
     }
   ]
 }

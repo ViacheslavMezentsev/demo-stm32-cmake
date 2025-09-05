@@ -4,8 +4,7 @@
             "${config:toolchain}/arm-none-eabi/include",
             "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F103xB" ],
-        "compiler": "${config:toolchain}/bin/arm-none-eabi-gcc.exe"
+        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F103xB" ]
     },
     "configurations": [
         {
@@ -13,7 +12,8 @@
             "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}", "DEBUG" ],
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "${compiler}",
+            "forcedInclude":[],
+            "compilerPath": "",
             "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "gnu17",
@@ -28,7 +28,8 @@
             "includePath": [ "${defaultIncludePath}" ],
             "defines": [ "${defaultDefines}" ],
             "intelliSenseMode": "gcc-arm",
-            "compilerPath": "${compiler}",
+            "forcedInclude":[],
+            "compilerPath": "",
             "compileCommands": "${workspaceFolder}/build/Release/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools",
             "cStandard": "gnu17",

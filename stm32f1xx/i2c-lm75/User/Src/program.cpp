@@ -31,10 +31,10 @@ bool SensorAvailable = false;
 uint8_t SensorData[2] = {0};
 
 /// Значение температуры, 0.1 °C.
-int16_t Temp = 0;
+volatile int16_t Temp = 0;
 
 /// Измеренное значение.
-float SensorValue = 0;
+volatile float SensorValue = 0;
 
 /// Счётчики.
 volatile uint32_t TimeTickMs = 0;
@@ -109,7 +109,7 @@ void setup( void )
                 // Выполняем синхронное чтение данных без использования прерываний и DMA.
                 HAL_I2C_Master_Receive( & hi2c1, I2C_DTS_ADDRESS, SensorData, sizeof( SensorData ), I2C_IS_DEVICE_READY_TIMEOUT_MSEC );
 
-                HAL_Delay( 500 );
+                HAL_Delay( 500 );               
 
                 UpdateSensorData();
 
@@ -172,3 +172,4 @@ void HAL_I2C_MasterRxCpltCallback( I2C_HandleTypeDef * hi2c )
 {
     UpdateSensorData();
 }
+

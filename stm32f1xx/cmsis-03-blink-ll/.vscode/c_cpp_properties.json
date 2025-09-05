@@ -4,7 +4,7 @@
             "${config:toolchain}/arm-none-eabi/include",
             "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_FULL_LL_DRIVER", "STM32F103xB" ]
+        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F103xB" ]
     },
     "configurations": [
         {

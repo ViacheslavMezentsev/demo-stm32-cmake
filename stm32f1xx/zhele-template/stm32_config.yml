@@ -149,8 +149,6 @@ compile_definitions:
 
 # (Опционально) Дополнительные флаги компилятора.
 compile_options:
-  - "-ffunction-sections"
-  - "-fdata-sections"
   - "-Os"
   - "-g3"
 #  - "-gdwarf-2"         # для симуляции в Proteus

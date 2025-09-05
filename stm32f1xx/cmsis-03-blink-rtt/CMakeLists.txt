@@ -1,72 +1,25 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_C_STANDARD 11)
+# Используется набор скриптов для STM32: https://github.com/ObKo/stm32-cmake
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../../modules/stm32-cmake/cmake/stm32_gcc.cmake")
 
-# Семейство и модель мк.
-set(MCU STM32F103C8T)
-string(SUBSTRING ${MCU} 5 2 MCU_FAMILY)
-string(SUBSTRING ${MCU} 5 6 MCU_MODEL)
+# Определяем путь к нашему фреймворку.
+set(STM32_YML_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../modules/stm32-cmake-yml")
 
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/gcc-arm-none-eabi.cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../../tools")
+# Добавляем путь к фреймворку в CMAKE_MODULE_PATH.
+list(APPEND CMAKE_MODULE_PATH "${STM32_YML_FRAMEWORK_DIR}")
 
-# В качестве имени проекта используем имя папки (см. tasks.json и launch.json).
-get_filename_component(BASE_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-set(PROJECT_NAME ${BASE_FOLDER})
+# Подключаем главный файл фреймворка.
+include(stm32_yml)
 
-include(stm32_utils)
+# (Опционально) Если вы хотите использовать нестандартное имя для конфига.
+#set(PROJECT_CONFIG_FILE "config.yml" CACHE STRING "..." FORCE)
 
-project(${PROJECT_NAME} C)
+# Вызываем подготовительную функцию.
+# Она прочитает YAML и вернет нам имя проекта и список языков.
+stm32_yml_prepare_project_data(PROJECT_NAME PROJECT_LANGUAGES)
 
-# Разворачиваем окружение сборки (CMSIS).
-set(CMSIS_VERSION "V1.8.5")
-set(STM32_CUBE_${MCU_FAMILY}_PATH   "$ENV{CMAKE_USER_HOME}/STM32Cube/Repository/STM32Cube_FW_${MCU_FAMILY}_${CMSIS_VERSION}/Drivers")
-set(STM32_CMSIS_PATH                "${STM32_CUBE_${MCU_FAMILY}_PATH}/CMSIS")
-#set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
-set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
+project(${PROJECT_NAME} LANGUAGES ${PROJECT_LANGUAGES})
 
-# Набор переменных для использования локальной библиотеки Cube, находящейся по указанным путям.
-#set(STM32_CMSIS_PATH                "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS")
-#set(STM32_HAL_${MCU_FAMILY}_PATH    "${STM32_CUBE_${MCU_FAMILY}_PATH}/STM32${MCU_FAMILY}xx_HAL_Driver")
-#set(STM32_CMSIS_${MCU_FAMILY}_PATH  "${STM32_CMSIS_PATH}/Device/ST/STM32${MCU_FAMILY}xx")
-
-add_executable(${PROJECT_NAME} system_stm32f1xx.c main.c)
-
-add_subdirectory(RTT)
-
-# Подключаем необходимые библиотеки.
-target_link_libraries(${PROJECT_NAME} PRIVATE STM32::Nano STM32::NoSys)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE STM32F103xB HSE_VALUE=8000000U)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${STM32_CMSIS_PATH}/Include
-    ${STM32_CMSIS_${MCU_FAMILY}_PATH}/Include
-)
-
-target_compile_options(${PROJECT_NAME} PRIVATE
-    # device type (cortex-m0, cortex-m3, ..)
-    -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
-    # warning
-    -W -Wall -Wextra
-    # optimization
-    $<$<CONFIG:DEBUG>:-Os -g -gdwarf-2 -gstrict-dwarf>
-    $<$<CONFIG:RELEASE>:-Os>
-    -ffunction-sections -fdata-sections
-    -fsingle-precision-constant
-    # other
-)
-
-target_link_options(${PROJECT_NAME} PRIVATE
-    -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
-    -nostartfiles
-    -T${CMAKE_CURRENT_SOURCE_DIR}/${MCU}x_FLASH.ld
-    LINKER:-Map=${PROJECT_NAME}.map,--gc-sections,--no-warn-rwx-segments,--print-memory-usage
-)
-
-# Артефакты сборки.
-stm32_print_size_of_target(${PROJECT_NAME})
-stm32_generate_binary_file(${PROJECT_NAME})
-stm32_generate_hex_file(${PROJECT_NAME})
-stm32_generate_lss_file(${PROJECT_NAME})
+# Вызываем основную функцию настройки.
+stm32_yml_setup_project(${PROJECT_NAME})

@@ -1,17 +1,175 @@
-# STM32 and Ethernet, part 3. ARP.
+# Шаблон проекта для разработки под STM32 с использованием VS Code, CMake и `project_config.yml`
 
-<img src="https://microtechnics.ru/wp-content/uploads/2021/10/osi-468x400.jpg" width="250">
+Этот репозиторий представляет собой универсальный шаблон для разработки прошивок для микроконтроллеров **STM32**. В его основе лежит современный, гибкий и полностью автоматизированный подход к сборке, управляемый через один конфигурационный файл — **`project_config.yml`**.
 
-Demo project with basic ARP protocol implementation for STM32 and ENC28J60 as ethernet physical layer provider. Connection diagram for BluePill development board:
+Проект является частью репозитория: [https://github.com/ViacheslavMezentsev/demo-stm32-cmake](https://github.com/ViacheslavMezentsev/demo-stm32-cmake)
 
-<img src="https://microtechnics.ru/wp-content/uploads/2021/08/enc28j60-connection-768x419.jpg" width="400">
+## Философия и ключевые особенности
 
-List of required hardware:
-- BluePill (STM32F103C8T6)
-- ENC28J60
+Шаблон построен на базе мощного набора CMake-скриптов **`stm32-cmake`**, который позволяет автоматизировать поиск и подключение библиотек CMSIS, HAL, а также генерацию скриптов компоновщика. Данный шаблон выводит эту автоматизацию на новый уровень, инкапсулируя всю сложную логику и предоставляя пользователю простой и понятный YAML-интерфейс.
 
-Peripherals in use:
-- SPI1 for communication
-- some additional GPIOs in output mode to control ENC28J60
+* **Централизованная конфигурация:** Никакого редактирования `CMakeLists.txt`. Все настройки проекта — от модели MCU до опций компилятора — находятся в файле `project_config.yml`.
+* **Автоматизация:** Автоматический поиск драйверов, определение последней версии STM32Cube FW, генерация скриптов компоновщика и управление флагами компиляции.
+* **Поддержка `.ioc` файлов:** Возможность использовать `.ioc` файл из STM32CubeMX как "источник правды" для аппаратной конфигурации.
+* **Интеграция с VS Code:** Готовые конфигурации для сборки, прошивки и пошаговой отладки прямо из редактора.
+* **Кроссплатформенность:** Инструкции по настройке для Windows, Linux и Windows Subsystem for Linux (WSL).
 
-The full description, if necessary, is [here](https://microtechnics.ru/stm32-i-ethernet-chast-3-kanalnyj-uroven-protokol-arp/).
+## Требования
+
+Перед началом работы убедитесь, что у вас установлены следующие инструменты:
+
+* **Visual Studio Code**
+* **xPack ARM GCC Toolchain:** Компилятор `arm-none-eabi-gcc`.
+* **CMake** (версия 3.19 или выше)
+* **Ninja** (рекомендуемая система сборки для CMake)
+* **yq:** **Обязательная зависимость.** Консольная утилита для обработки YAML-файлов.
+* **Драйверы для вашего отладчика** (ST-Link, J-Link и т.д.)
+* **OpenOCD** (требуется для большинства отладчиков)
+* **Git**
+
+## Начало работы: Клонирование репозитория
+
+**Очень важно** клонировать репозиторий с флагом `--recurse-submodules`, чтобы автоматически загрузить `stm32-cmake`, который является неотъемлемой частью проекта.
+
+```bash
+git clone --recurse-submodules https://github.com/ViacheslavMezentsev/demo-stm32-cmake.git
+cd demo-stm32-cmake
+```
+
+## 1. Настройка окружения
+
+Выберите инструкцию для вашей операционной системы.
+
+### Вариант А: Windows (нативная сборка)
+
+1. **Установите xPack GNU Arm Embedded GCC:**
+    * Перейдите на страницу релизов: **[xPack GNU Arm Embedded GCC Releases](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases)**.
+    * Скачайте и распакуйте архив в постоянное место (например, `C:\Users\ВашеИмя\Documents\xPacks\`).
+    * Добавьте путь к папке `bin` в системную переменную `PATH`.
+
+2. **Установите остальные инструменты через Scoop** (рекомендуется). Откройте PowerShell и выполните:
+
+    ```powershell
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm get.scoop.sh | iex
+    scoop install cmake ninja openocd yq
+    ```
+
+### Вариант Б: Linux (Ubuntu / Debian)
+
+1. **Установите xPack GNU Arm Embedded GCC:** Следуйте инструкциям с [официальной страницы xPack](https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases) для установки через `npm` или скачивания архива. Убедитесь, что путь к `bin` добавлен в `PATH`.
+2. **Установите остальные инструменты:**
+
+    ```bash
+    sudo apt update
+    sudo apt install build-essential cmake ninja-build openocd
+    sudo snap install yq
+    ```
+
+### Вариант В: Windows + WSL2 (рекомендуется)
+
+Этот метод позволяет вести разработку в полноценном Linux-окружении, находясь в Windows.
+
+1. **Установите WSL2 и дистрибутив Ubuntu.** Откройте PowerShell от имени администратора: `wsl --install`.
+2. **Установите инструменты внутри WSL**, следуя инструкциям для **Варианта Б (Linux)**.
+3. **Настройте проброс USB-устройств в WSL с помощью `usbipd-win`**. Это **критически важный шаг** для прошивки и отладки.
+    * **В Windows:** Установите `usbipd-win`. Скачайте последний `.msi` установщик со [страницы релизов](https://github.com/dorssel/usbipd-win/releases) и установите его.
+    * **Подключите ваш отладчик** (ST-Link, J-Link) к компьютеру.
+    * **В PowerShell (от имени администратора):** Найдите ваше устройство.
+
+        ```powershell
+        usbipd wsl list
+        ```
+
+        Вы увидите список устройств. Запомните `BUSID` вашего отладчика (например, `1-1`).
+    * **Привяжите устройство к WSL:**
+
+        ```powershell
+        # Замените <busid> и <distro_name> на ваши значения
+        usbipd wsl attach --busid <busid> --distribution <distro_name>
+        ```
+
+    * **Проверка:** В терминале WSL выполните `lsusb`, вы должны увидеть там свое устройство.
+    * **Примечание:** Эту операцию (`attach`) необходимо повторять после каждой перезагрузки хост-машины или переподключения устройства.
+
+## 2. Настройка Visual Studio Code
+
+1. Откройте папку с проектом в VS Code. **При работе с WSL** используйте плагин "Remote - WSL" для открытия папки прямо в Linux-окружении.
+2. VS Code предложит установить рекомендованные расширения из файла `.vscode/extensions.json`. Согласитесь.
+3. `CMake Tools` автоматически сконфигурирует проект. Если появится запрос на выбор компилятора (Kit), выберите `arm-none-eabi-gcc`.
+
+## 3. Конфигурация проекта
+
+Вся настройка проекта выполняется в **одном файле**: `project_config.yml`. Откройте его и адаптируйте под ваши нужды.
+
+### Сценарий 1: Быстрый старт с `.ioc` файлом (рекомендуется для проектов из CubeMX)
+
+1. Сгенерируйте проект в STM32CubeMX с опцией `Makefile`. Положите ваш `.ioc` файл в корень проекта.
+2. В `project_config.yml` укажите путь к нему:
+
+    ```yaml
+    ioc_file: "MyProject.ioc"
+    ```
+
+3. Система автоматически определит MCU, имя проекта, размеры стека/кучи и используемую версию Cube FW. Вам останется только настроить список `sources` и `hal_components`.
+
+### Сценарий 2: Ручная конфигурация
+
+Если у вас нет `.ioc` файла, просто опишите ваш проект в `project_config.yml`:
+
+1. **Укажите модель микроконтроллера:**
+
+    ```yaml
+    mcu: "STM32F401CCU6"
+    ```
+
+2. **Настройте исходные файлы и модули:**
+
+    ```yaml
+    sources:
+      - "Core"
+      - "User"
+    ```
+
+3. **Укажите компоненты HAL:**
+
+    ```yaml
+    hal_components:
+      - "RCC"
+      - "GPIO"
+      - "UART"
+    ```
+
+**Важное замечание по модулям:**
+Когда вы добавляете **папку** в список `sources` (например, `"Core"`), система ожидает найти внутри нее файл `CMakeLists.txt`.
+
+* Если вы используете проект, сгенерированный CubeMX, он создаст `Makefile`. Вы можете попросить **ИИ (например, ChatGPT, Gemini)** преобразовать этот `Makefile` в простой `CMakeLists.txt`.
+* Типичный `CMakeLists.txt` для модуля выглядит так:
+
+    ```cmake
+    file(GLOB_RECURSE SOURCES "*.c" "*.cpp")
+    add_library(core STATIC ${SOURCES})
+    target_include_directories(core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Inc")
+    ```
+
+Для детального описания всех доступных параметров обратитесь к отдельному руководству по `project_config.yml`.
+
+## 4. Сборка, прошивка и отладка
+
+### Сборка
+
+* Нажмите `Ctrl+Shift+B` и выберите **CMake: build**.
+* Либо нажмите кнопку **Build** на синей строке состояния внизу окна VS Code.
+
+### Прошивка и другие задачи
+
+В файле `.vscode/tasks.json` настроены задачи для прошивки и других операций.
+
+* Откройте палитру команд (`Ctrl+Shift+P`), введите `Tasks: Run Task` и выберите нужный вариант.
+
+### Отладка
+
+1. **Для пользователей WSL:** Убедитесь, что ваш отладчик "проброшен" в WSL с помощью `usbipd wsl attach`.
+2. Перейдите во вкладку "Run and Debug" (Ctrl+Shift+D).
+3. Вверху выберите профиль отладки (например, `Debug (ocd/stlink)` для реального устройства или `Debug (qemu)` для эмуляции).
+4. Нажмите **F5**. VS Code автоматически соберет проект, прошьет его (или запустит эмулятор) и остановит выполнение в начале функции `main()`.
+5. Используйте панель отладки для пошагового выполнения, установки точек останова и просмотра переменных.
