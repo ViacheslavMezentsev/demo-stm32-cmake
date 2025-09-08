@@ -4,7 +4,7 @@
             "${config:toolchain}/arm-none-eabi/include",
             "${config:toolchain}/arm-none-eabi/include/c++/**"
         ],
-        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F4xx", "STM32F401xE" ],
+        "defaultDefines": [ "__GNUC__", "USE_HAL_DRIVER", "STM32F407xx" ],
         "compiler": ""
     },
     "configurations": [
