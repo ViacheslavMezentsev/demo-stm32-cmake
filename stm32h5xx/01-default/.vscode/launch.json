@@ -16,6 +16,11 @@
       //"showDevDebugOutput" : "raw",
       "svdFile" : "${config:svdFile}",
       "liveWatch": { "enabled": false, "samplesPerSecond": 4 },
+      // https://community.st.com/t5/stm32cubeide-for-visual-studio/nucleo-h503-debugging-with-vscode/td-p/707645
+      "serverArgs": [ "-m", "1"],
+      // Override the default commands to avoid a reset after loading.
+      // A reset will make the just-loaded binary in RAM lost.
+      "overrideLaunchCommands": [ "-target-download", "monitor halt" ],
     },
     {
       "name" : "Debug (gdb/jlink)",
@@ -125,12 +130,12 @@
     {
         "name": "Debug (qemu)",
         "cwd": "${workspaceFolder}",
-        "executable": "${config:executable}",        
+        "executable": "${config:executable}",
         "request": "launch",
         "type": "cortex-debug",
         "servertype": "external",
-        "gdbTarget": "localhost:1234",              
-        "device": "${config:device}",        
+        "gdbTarget": "localhost:1234",
+        "device": "${config:device}",
         "runToEntryPoint" : "main",
         //"showDevDebugOutput" : "raw",
         "svdFile": "${config:svdFile}",

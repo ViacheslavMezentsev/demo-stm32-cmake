@@ -11,7 +11,7 @@ extern "C" void initialise_monitor_handles( void );
 void init( void )
 {
     // Инициализация библиотеки Semihosting.
-    initialise_monitor_handles();
+    //initialise_monitor_handles();
 }
 
 
@@ -35,7 +35,7 @@ void loop( void )
 
     auto value = HAL_GPIO_ReadPin( LED_USER_GPIO_Port, LED_USER_Pin );
 
-    printf( "Led %s\n", value == GPIO_PIN_RESET ? "On" : "Off" );
+    //printf( "Led %s\n", value == GPIO_PIN_RESET ? "On" : "Off" );
 
-    HAL_Delay( 500 );
+    HAL_Delay( 1000 );
 }
