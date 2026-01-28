@@ -1,12 +1,18 @@
-// Минимальный код Си, использующий (без system_stm32f1xx.c) только заголовочный файл stm32f1xx.h.
+// Минимальный код Си, использующий только заголовочный файл stm32f1xx.h.
 // Таблица векторов оформлена кодом на Си.
 #include "xprintf.h"
 #include "main.h"
 
+#if defined(BARE_METALL)
 /// Таблица векторов прерываний.
 __attribute( ( used, section( ".isr_vector" ) ) )
-const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] = { ( void* ) &_estack,    // начальный указатель стека
-    [1] = Reset_Handler, [15] = SysTick_Handler };
+const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] =
+{
+    ( void* ) &_estack,    // начальный указатель стека
+    [1] = Reset_Handler,
+    [15] = SysTick_Handler
+};
+#endif
 
 volatile unsigned sys_tick_counter = 0;
 
@@ -20,7 +26,7 @@ void SysTick_Handler()
 }
 
 
-/*** 
+/***
  *  \brief  Инициализация SysTick для генерации прерывания каждую 1 мс.
  */
 void init( void )
@@ -128,6 +134,8 @@ void delay( unsigned udelay )
 }
 
 
+#if defined(BARE_METALL)
+
 /***
  * \brief   Описывает обработчик прерывания вектора сброса мк.
  */
@@ -165,3 +173,5 @@ void Reset_Handler()
     {
     }
 }
+
+#endif

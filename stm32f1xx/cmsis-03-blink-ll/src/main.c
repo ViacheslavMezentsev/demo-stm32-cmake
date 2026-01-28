@@ -7,6 +7,7 @@
 #define LED_USER_Pin       LL_GPIO_PIN_13
 #define LED_USER_GPIO_Port GPIOC
 
+#if defined(BARE_METALL)
 /// Таблица векторов прерываний.
 __attribute( ( used, section( ".isr_vector" ) ) ) const vector isr_handlers[2 - ( int ) NonMaskableInt_IRQn] =
 {
@@ -14,6 +15,7 @@ __attribute( ( used, section( ".isr_vector" ) ) ) const vector isr_handlers[2 - 
     [1] = Reset_Handler,
     [15] = SysTick_Handler
 };
+#endif
 
 volatile unsigned sys_tick_counter = 0;
 
@@ -93,6 +95,8 @@ int main()
 }
 
 
+#if defined(BARE_METALL)
+
 /***
  * \brief   Описывает обработчик прерывания вектора сброса мк.
  */
@@ -130,3 +134,5 @@ void Reset_Handler()
     {
     }
 }
+
+#endif

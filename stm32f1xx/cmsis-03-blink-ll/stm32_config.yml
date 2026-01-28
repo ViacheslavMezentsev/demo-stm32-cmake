@@ -60,9 +60,9 @@ sources:
 #  - "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_rcc.c"
   - "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_gpio.c"
   - "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_utils.c"
-  - "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c"
+#  - "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c"
 #  - "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xb.s"
-#  - "src/syscalls.c"
+  - "src/syscalls.c"
   - "src/main.c"
 
 # (Опционально) Дополнительные пути к папкам с заголовочными файлами.
@@ -82,7 +82,7 @@ include_directories:
 # (Опционально) Включает поддержку CMSIS через stm32-cmake.
 # true (по умолчанию): система ищет и подключает CMSIS (ядро, заголовки, startup).
 # false: CMSIS не подключается. Вы должны предоставить все системные файлы сами.
-#use_cmsis: true
+#use_cmsis: false
 
 # (Опционально) Включает поддержку HAL/LL через stm32-cmake.
 # true (по умолчанию): система ищет и подключает компоненты HAL/LL из списка ниже.
@@ -155,7 +155,7 @@ c_standard: 11
 compile_definitions:
   - "STM32F103xB"
   - "USE_FULL_LL_DRIVER"
-  - "BARE_METALL"
+#  - "BARE_METALL"
 
 # (Опционально) Дополнительные флаги компилятора.
 compile_options:
@@ -179,7 +179,7 @@ link_options:
   - "-mcpu=cortex-m3"
   - "-mthumb"
   - "-mfloat-abi=soft"
-  - "-nostartfiles"
+#  - "-nostartfiles"
 
 # (Опционально) Прямые директивы для компоновщика (например, "--gc-sections").
 linker_directives:

@@ -40,7 +40,7 @@ mcu: "STM32F103C8T6"
 
 # (Опционально) Размеры кучи и стека (только для linker_script: "auto").
 # Поддерживаются форматы "1024" (байты), "2K".
-heap_size: "0"
+heap_size: "512"
 stack_size: "1K"
 
 
@@ -55,19 +55,17 @@ stack_size: "1K"
 sources:
 #  - "Core"        # Код, сгенерированный CubeMX (main.c, stm32h7xx_it.c, etc.)
 #  - "User"
-#  - "Core/Src/system_stm32f1xx.c"
+  - "tiny-regex"
+  - "tests"
+#  - "system_stm32f1xx.c"
 #  - "startup_stm32f103xb.s"
-#  - "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/system_stm32f1xx.c"
-#  - "Drivers/CMSIS/Device/ST/STM32F1xx/Source/Templates/gcc/startup_stm32f103xb.s"
-#  - "src/syscalls.c"
-  - "src/main.c"
+#  - "syscalls.c"
+  - "main.cpp"
 
 # (Опционально) Дополнительные пути к папкам с заголовочными файлами.
 include_directories:
-#  - "."       # положение stm32f1xx_hal_conf.h
-  - "src"
-  - "Drivers/CMSIS/Include"
-  - "Drivers/CMSIS/Device/ST/STM32F1xx/Include"
+  - "."       # положение stm32f1xx_hal_conf.h
+
 
 # ==============================================================================
 # 3. НАСТРОЙКИ ДРАЙВЕРОВ И БИБЛИОТЕК ST
@@ -83,7 +81,7 @@ include_directories:
 # (Опционально) Включает поддержку HAL/LL через stm32-cmake.
 # true (по умолчанию): система ищет и подключает компоненты HAL/LL из списка ниже.
 # false: список hal_components игнорируется.
-use_hal: false
+#use_hal: true
 
 # (Опционально) Версия пакета драйверов.
 # "auto" (по умолчанию): приоритет у локальной папки 'Drivers', затем поиск
@@ -94,7 +92,7 @@ use_hal: false
 # Список компонентов HAL/LL для подключения.
 # USE_HAL_DRIVER добавляется, если список не пуст.
 # USE_FULL_LL_DRIVER добавляется, если есть элемент с префиксом "LL_".
-#hal_components: [ "CORTEX" ]
+hal_components: [ "CORTEX" ]
 
 
 # ==============================================================================
@@ -142,45 +140,33 @@ use_hal: false
 
 # --- Языки и стандарты ---
 # (Опционально) Если секция отсутствует, по умолчанию будут использованы C, CXX, ASM.
-languages: [C, ASM]
-c_standard: 11
-#cpp_standard: 14
+languages: [C, CXX, ASM]
+c_standard: 17
+cpp_standard: 17
 
 # --- Компиляция ---
 # (Опционально) Дополнительные определения препроцессора.
-compile_definitions:
-  - "STM32F103xB"
-#  - "BARE_METALL"
+#compile_definitions:
 
 # (Опционально) Дополнительные флаги компилятора.
 compile_options:
-  - "-mcpu=cortex-m3"
-  - "-mthumb"
-  - "-mfloat-abi=soft"
-  - "-ffunction-sections"
-  - "-fdata-sections"
-  - "$<$<CONFIG:DEBUG>:-Os>"
+  - "-Os"
+#  - "-gdwarf-2"         # для симуляции в Proteus
+#  - "-gstrict-dwarf"    # для симуляции в Proteus
+  - "-g3"
 
 # --- Компоновка ---
 # (Опционально) Список путей к прекомпилированным статическим библиотекам (.a).
 #custom_libraries:
 
 # (Опционально) Дополнительные библиотеки для компоновки (например, 'm' для libm).
-link_libraries:
-  - "c"
-  - "gcc"
+#link_libraries:
 
 # (Опционально) Опции, передаваемые компилятору на этапе компоновки.
-link_options:
-  - "-mcpu=cortex-m3"
-  - "-mthumb"
-  - "-mfloat-abi=soft"
-#  - "-nostartfiles"
+#link_options:
 
 # (Опционально) Прямые директивы для компоновщика (например, "--gc-sections").
 linker_directives:
-  - "--cref"
-  - "--gc-sections"
   - "--print-memory-usage"
 #  - "--no-warn-rwx-segments"
 

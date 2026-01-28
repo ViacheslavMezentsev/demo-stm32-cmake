@@ -30,6 +30,7 @@
         "Makefile": "makefile",
         "*.inc": "plaintext",
         "random": "c"
-    }
+    },
+    "FSharp.suggestGitignore": false
     //"toolchain": "${env:HOME}/xpack-arm-none-eabi-gcc-13.2.1-1.1"
 }
