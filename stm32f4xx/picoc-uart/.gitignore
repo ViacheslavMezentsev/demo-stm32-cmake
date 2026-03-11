@@ -1,9 +1,10 @@
 /build
+/patches
 /Project Backups
-/.PVS-Studio
+docs/output/
 .cortex-debug*
 BROWSE.*
 .mxproject
 *.User.workspace
+.fake
 Makefile
-STM32*.ld

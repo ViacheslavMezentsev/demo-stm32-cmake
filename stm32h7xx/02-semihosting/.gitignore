@@ -1,4 +1,10 @@
 /build
+/patches
+/Project Backups
+docs/output/
 .cortex-debug*
 BROWSE.*
 .mxproject
+*.User.workspace
+.fake
+Makefile

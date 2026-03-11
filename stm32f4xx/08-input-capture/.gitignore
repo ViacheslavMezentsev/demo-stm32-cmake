@@ -7,3 +7,4 @@ BROWSE.*
 .mxproject
 *.User.workspace
 .fake
+Makefile
