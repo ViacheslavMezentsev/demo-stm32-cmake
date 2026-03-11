@@ -4,6 +4,5 @@
         "ms-vscode.cpptools",
         "ms-vscode.cmake-tools",
         "marus25.cortex-debug",
-        "rioj7.command-variable"
     ]
 }
