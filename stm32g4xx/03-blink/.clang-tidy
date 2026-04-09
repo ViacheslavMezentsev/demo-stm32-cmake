@@ -1,0 +1,10 @@
+Checks: '*, -altera*, -fuchsia*, -llvm-*, -llvmlibc-*, -bugprone-easily-swappable-parameters, -cppcoreguidelines-owning-memory, -modernize-use-trailing-return-type, -readability-identifier-length'
+CheckOptions:
+    - key: readability-magic-numbers.IgnorePowersOf2IntegerValues
+      value: true
+    - key: cppcoreguidelines-avoid-magic-numbers.IgnorePowersOf2IntegerValues
+      value: true
+    - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+      value : true
+
+FormatStyle: 'file'
