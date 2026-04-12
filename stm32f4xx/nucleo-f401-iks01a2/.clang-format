@@ -1,74 +1,256 @@
-﻿AccessModifierOffset: '-4'
-AlignAfterOpenBracket: DontAlign
-AlignConsecutiveMacros: 'true'
-AlignConsecutiveAssignments: 'false'
-AlignConsecutiveDeclarations: 'false'
-AlignEscapedNewlines: Left
-AlignOperands: 'true'
-AlignTrailingComments: 'true'
-AlignArrayOfStructures: Left
-AllowAllArgumentsOnNextLine: 'false'
-AllowAllConstructorInitializersOnNextLine: 'false'
-AllowAllParametersOfDeclarationOnNextLine: 'false'
-AllowShortCaseLabelsOnASingleLine: 'false'
-AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: 'true'
-AllowShortLambdasOnASingleLine: All
-AllowShortLoopsOnASingleLine: 'true'
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: 'false'
-AlwaysBreakTemplateDeclarations: 'Yes'
-BinPackArguments: 'true'
-BinPackParameters: 'true'
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
-BraceWrapping:
-  AfterCaseLabel: 'true'
-  AfterClass: 'true'
-  AfterControlStatement: 'true'
-  AfterEnum: 'true'
-  AfterFunction: 'true'
-  AfterNamespace: 'false'
-  AfterStruct: 'true'
-  AfterUnion: 'true'
-BreakConstructorInitializers: BeforeColon
-BreakConstructorInitializersBeforeComma: 'false'
-BreakBeforeTernaryOperators: 'true'
-ColumnLimit: '120'
-CompactNamespaces: 'false'
-ConstructorInitializerIndentWidth: '0'
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
-ContinuationIndentWidth: '4'
-ExperimentalAutoDetectBinPacking: 'false'
-FixNamespaceComments: 'true'
-IncludeBlocks: Regroup
-IndentCaseLabels: 'true'
-IndentWidth: '4'
-IndentWrappedFunctionNames: 'false'
-KeepEmptyLinesAtTheStartOfBlocks: 'false'
+﻿# ============================================================================
+# CLANG-FORMAT CONFIGURATION
+# Стандарт: C++11
+# ============================================================================
+
+# ============================================================================
+# ОСНОВНЫЕ НАСТРОЙКИ
+# ============================================================================
+
+# Язык форматирования
 Language: Cpp
-MaxEmptyLinesToKeep: '2'
-NamespaceIndentation: Inner
-PenaltyReturnTypeOnItsOwnLine: '100'
-PointerAlignment: Left
-ReflowComments: 'false'
-SortIncludes: 'false'
-SortUsingDeclarations: 'true'
-SpaceAfterCStyleCast: 'true'
-SpaceAfterLogicalNot: 'false'
-SpaceAfterTemplateKeyword: 'false'
-SpaceBeforeAssignmentOperators: 'true'
-SpaceBeforeCtorInitializerColon: 'true'
-SpaceBeforeInheritanceColon: 'true'
-SpaceBeforeParens: ControlStatements
-SpaceInEmptyParentheses: 'false'
-SpacesBeforeTrailingComments: '4'
-SpacesInAngles: 'false'
-SpacesInCStyleCastParentheses: 'true'
-SpacesInContainerLiterals: 'false'
-SpacesInParentheses: 'true'
-SpacesInSquareBrackets: 'false'
+
+# Стандарт C++
 Standard: Cpp11
-TabWidth: '4'
+
+# ============================================================================
+# ОТСТУПЫ И ВЫРАВНИВАНИЕ
+# ============================================================================
+
+# Ширина отступа (пробелы)
+IndentWidth: 4
+
+# Ширина отступа для продолжений строк
+ContinuationIndentWidth: 4
+
+# Ширина табуляции (используем пробелы)
+TabWidth: 4
+
+# Использовать табуляцию вместо пробелов
 UseTab: Never
+
+# Отступ для модификаторов доступа (private/public/protected)
+AccessModifierOffset: -4
+
+# Выравнивание после открывающейся скобки
+# DontAlign = фиксированный отступ (4 пробела)
+# Align = выравнивание по первому параметру
+AlignAfterOpenBracket: DontAlign
+
+# Выравнивание операторов
+AlignOperands: true
+
+# Выравнивание комментариев в конце строки
+AlignTrailingComments: true
+
+# Выравнивание операторов =
+AlignConsecutiveAssignments: true
+
+# Выравнивание массивов структур
+AlignArrayOfStructures: Left
+
+# Выравнивание последовательных макросов
+AlignConsecutiveMacros: true
+
+# Выравнивание последовательных присваиваний
+#AlignConsecutiveAssignments: false
+
+# Выравнивание последовательных объявлений
+AlignConsecutiveDeclarations: false
+
+# Выравнивание экранированных переносов строк
+AlignEscapedNewlines: Left
+
+# ============================================================================
+# ПЕРЕНОС СТРОК
+# ============================================================================
+
+# Максимальная длина строки
+ColumnLimit: 120
+
+# Перенос аргументов при вызове функции (каждый аргумент на новой строке)
+# ✅ Упаковка аргументов при вызове функции
+BinPackArguments: true
+
+# Перенос параметров функции (каждый параметр на новой строке)
+# ✅ Разрешить упаковку параметров в одну строку
+BinPackParameters: true
+
+# Разрешить все аргументы на следующей строке
+AllowAllArgumentsOnNextLine: false
+
+# Разрешить все параметры конструктора на следующей строке
+AllowAllConstructorInitializersOnNextLine: false
+
+# ✅ Разрешить перенос всех параметров на следующую строку если не помещаются
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# Запретить короткие case-блоки на одной строке
+AllowShortCaseLabelsOnASingleLine: false
+
+# Разрешить короткие функции на одной строке
+AllowShortFunctionsOnASingleLine: false
+
+# Запретить короткие блоки (if/while/for) на одной строке
+#AllowShortBlocksOnASingleLine: None
+
+# Запретить короткие if-выражения на одной строке
+#AllowShortIfStatementsOnASingleLine: false
+
+# Запретить короткие лямбды на одной строке
+#AllowShortLambdasOnASingleLine: false
+
+# Запретить короткие циклы на одной строке
+#AllowShortLoopsOnASingleLine: false
+
+AllowShortEnumsOnASingleLine: true
+
+# Всегда переносить после возвращаемого типа
+AlwaysBreakAfterDefinitionReturnType: None
+
+# Всегда переносить после возвращаемого типа
+AlwaysBreakAfterReturnType: None
+
+# Всегда переносить перед многострочными строками
+AlwaysBreakBeforeMultilineStrings: false
+
+# Всегда переносить объявления шаблонов
+AlwaysBreakTemplateDeclarations: Yes
+
+# Перенос перед бинарными операторами
+BreakBeforeBinaryOperators: None
+
+# Перенос перед тернарными операторами
+BreakBeforeTernaryOperators: true
+
+# Разбивать инициализаторы конструктора перед запятой
+BreakConstructorInitializers: AfterColon
+
+# Разбивать список наследования перед запятой
+BreakInheritanceList: AfterColon
+
+# Индентация инициализаторов конструктора
+ConstructorInitializerIndentWidth: 4
+
+# Индентация перенесённых имён функций
+IndentWrappedFunctionNames: false
+
+# Отступ для блоков внутри case
+IndentCaseBlocks: true
+
+IndentCaseLabels: true
+
+# Отступ для меток goto и т.п.
+IndentGotoLabels: false  # обычно false, чтобы метки были на одном уровне
+
+# Отступ после case перед телом (если тело не в блоке)
+IndentPPDirectives: None  # для препроцессора
+
+# Штраф за возвращаемый тип на отдельной строке
+PenaltyReturnTypeOnItsOwnLine: 100
+
+# ============================================================================
+# СКОБКИ И БЛОКИ
+# ============================================================================
+
+# Стиль размещения скобок
+BreakBeforeBraces: Custom
+
+# Настройки переноса скобок
+BraceWrapping:
+  AfterCaseLabel: true        # Скобка после метки case
+  AfterClass: true            # Скобка после класса
+  AfterControlStatement: true # Скобка после управляющей конструкции
+  AfterEnum: true             # Скобка после enum
+  AfterFunction: true         # Скобка после функции
+  AfterNamespace: false       # Скобка после namespace
+  AfterStruct: true           # Скобка после struct
+  AfterUnion: true            # Скобка после union
+  BeforeElse: true            # else на новую строку
+
+# Компактные пространства имён
+CompactNamespaces: false
+
+# Индентация пространств имён
+NamespaceIndentation: Inner
+
+# ============================================================================
+# ПРОБЕЛЫ
+# ============================================================================
+
+# Пробел после C-style cast
+SpaceAfterCStyleCast: true
+
+# Пробел после логического NOT
+SpaceAfterLogicalNot: false
+
+# Пробел после ключевого слова template
+SpaceAfterTemplateKeyword: false
+
+# Пробел перед операторами присваивания
+SpaceBeforeAssignmentOperators: true
+
+# Пробел перед двоеточием инициализатора конструктора
+SpaceBeforeCtorInitializerColon: true
+
+# Пробел перед двоеточием наследования
+SpaceBeforeInheritanceColon: true
+
+# Пробел перед скобками управляющих конструкций
+SpaceBeforeParens: ControlStatements
+
+# Пробелы в пустых скобках
+SpaceInEmptyParentheses: false
+
+# Пробелы перед комментариями в конце строки
+SpacesBeforeTrailingComments: 4
+
+# Пробелы в угловых скобках < >
+SpacesInAngles: false
+
+# Пробелы в скобках C-style cast
+SpacesInCStyleCastParentheses: true
+
+# Пробелы в скобках контейнеров
+SpacesInContainerLiterals: false
+
+# Пробелы в круглых скобках ( )
+SpacesInParentheses: true
+
+# Пробелы в квадратных скобках [ ]
+SpacesInSquareBrackets: false
+
+# ============================================================================
+# ПЕРЕНАПРАВЛЕНИЕ И СОРТИРОВКА
+# ============================================================================
+
+# Блоки include
+IncludeBlocks: Regroup
+
+# Сортировка include
+SortIncludes: false
+
+# Сортировка using деклараций
+SortUsingDeclarations: true
+
+# ============================================================================
+# ПРОЧИЕ НАСТРОЙКИ
+# ============================================================================
+
+# Сохранять пустые строки в начале блоков
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Максимальное количество пустых строк подряд
+MaxEmptyLinesToKeep: 2
+
+# Разрыв между функциями (требует clang-format 16+)
+SeparateDefinitionBlocks: Always
+
+# Экспериментальное автоопределение bin packing
+ExperimentalAutoDetectBinPacking: false
+
+# Исправлять комментарии пространств имён
+FixNamespaceComments: true
+
+# Перенос комментариев
+ReflowComments: false

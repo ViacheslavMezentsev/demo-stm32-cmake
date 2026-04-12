@@ -1,7 +1,11 @@
 ﻿#include <stdio.h>
 #include "re.h"
 
-void test_search(void)
+/**
+ * @brief Тестирование функции поиска с использованием регулярных выражений.
+ * 
+ */
+void test_search( void )
 {
     /* Standard int to hold length of match */
     int match_length;

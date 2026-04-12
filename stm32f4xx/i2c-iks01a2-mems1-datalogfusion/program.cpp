@@ -150,6 +150,12 @@ char MotionMC_SaveCalInNVM(unsigned short int datasize, unsigned int *data)
 }
 
 
+/**
+ * @brief  Очищает калибровочные данные в хранилище
+ *
+ * @param  dataSize  размер данных для очистки
+ * @retval Возвращает 0, если очистка прошла успешно, и 1 в случае ошибки
+ */
 char MotionMC_ClearCalInNVM(unsigned short int datasize)
 {
     if ( datasize > EEPROM.length() ) return HAL_ERROR;
@@ -235,7 +241,11 @@ void HAL_GPIO_EXTI_Callback( uint16_t GPIO_Pin )
     }
 }
 
-
+/**
+  * @brief  Функция для тестирования индикатора TM1638.
+  * @param  None
+  * @retval None
+  */
 void TestIndicator()
 {
     // Очищаем все полностью и светодиоды и семисегментные индикаторы.
@@ -352,7 +362,12 @@ void init( void )
     nh.advertise( pub_imu );
 }
 
-
+/**
+ * @brief   Отправляет данные на регистры сдвига для управления дисплеем.
+ * 
+ * @param segments  байт, определяющий, какие сегменты должны быть включены
+ * @param digits    байт, определяющий, какие разряды должны быть активированы
+ */
 void SendToShiftRegisters( uint8_t segments, uint8_t digits )
 {
     // Активируем LATCH (ST_CP) перед отправкой.
@@ -367,7 +382,7 @@ void SendToShiftRegisters( uint8_t segments, uint8_t digits )
     HAL_GPIO_WritePin( LATCH_DIO_GPIO_Port, LATCH_DIO_Pin, GPIO_PIN_SET );
 }
 
-
+/// @brief Коды для отображения цифр от 0 до 9 на семисегментном индикаторе (без учёта точки).
 const uint8_t SEGMENT_CODES[] =
 {
     0x03,    // 0 (00000011)
@@ -382,7 +397,12 @@ const uint8_t SEGMENT_CODES[] =
     0x09     // 9 (00001001)
 };
 
-
+/**
+ * @brief   Отображает число на семисегментном индикаторе.
+ * @param number  число для отображения
+ * @param n       номер разряда для отображения
+ * @retval None
+ */
 void DisplayNumber( uint16_t number, uint8_t n )
 {
     uint8_t digits[4];
