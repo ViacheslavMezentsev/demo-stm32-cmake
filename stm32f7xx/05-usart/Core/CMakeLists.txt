@@ -7,6 +7,8 @@ target_sources(${PROJECT_NAME} PRIVATE
     Src/stm32f7xx_it.c
     Src/dma.c
     Src/gpio.c
-    Src/usart.c    
+    Src/usart.c
+    Src/syscalls.c
+    Src/sysmem.c
     Src/main.c
 )

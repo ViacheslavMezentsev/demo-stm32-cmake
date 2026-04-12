@@ -6,5 +6,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     Src/stm32f7xx_hal_msp.c
     Src/stm32f7xx_it.c
     Src/gpio.c
+    Src/syscalls.c
+    Src/sysmem.c
     Src/main.c
 )

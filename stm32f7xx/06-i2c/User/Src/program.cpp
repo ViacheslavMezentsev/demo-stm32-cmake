@@ -93,7 +93,10 @@ void HAL_SYSTICK_Callback( void )
     }
 }
 
-
+/**
+ * \brief   Callback-функция завершения приёма данных по I2C в режиме мастера.
+ *
+ */
 void HAL_I2C_MasterRxCpltCallback( I2C_HandleTypeDef* hi2c )
 {
     if ( hi2c == i2cMasterHandler )
@@ -104,6 +107,10 @@ void HAL_I2C_MasterRxCpltCallback( I2C_HandleTypeDef* hi2c )
 }
 
 
+/**
+ * \brief   Callback-функция завершения передачи данных по I2C в режиме мастера.
+ *
+ */
 void HAL_I2C_MasterTxCpltCallback( I2C_HandleTypeDef* hi2c )
 {
     if ( hi2c == i2cMasterHandler )
@@ -112,7 +119,10 @@ void HAL_I2C_MasterTxCpltCallback( I2C_HandleTypeDef* hi2c )
     }
 }
 
-
+/**
+ * \brief   Callback-функция завершения приёма данных по I2C в режиме ведомого.
+ *
+ */
 void HAL_I2C_SlaveRxCpltCallback( I2C_HandleTypeDef* hi2c )
 {
     if ( hi2c == i2cSlaveHandler )
@@ -122,7 +132,10 @@ void HAL_I2C_SlaveRxCpltCallback( I2C_HandleTypeDef* hi2c )
     }
 }
 
-
+/**
+ * \brief   Callback-функция завершения передачи данных по I2C в режиме ведомого.
+ *
+ */
 void HAL_I2C_SlaveTxCpltCallback( I2C_HandleTypeDef* hi2c )
 {
     if ( hi2c == i2cSlaveHandler )
